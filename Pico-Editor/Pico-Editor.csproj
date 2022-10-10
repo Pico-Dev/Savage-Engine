@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Pico_Editor</RootNamespace>
+    <UseWPF>true</UseWPF>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <BaseOutputPath>..\x64\</BaseOutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+    <Title>Pico-Engine</Title>
+  </PropertyGroup>
+
+</Project>
