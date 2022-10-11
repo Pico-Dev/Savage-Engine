@@ -1,4 +1,4 @@
-﻿<!--
+﻿/*
 	MIT License
 
 Copyright (c) 2022        Daniel McLarty
@@ -21,25 +21,48 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-	
-	<UserControl x:Class="Pico_Editor.GameProject.OpenProjectView"
-            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-            xmlns:local="clr-namespace:Pico_Editor.GameProject"
-            mc:Ignorable="d"
-			Width="800"
-            d:DesignHeight="450" d:DesignWidth="800">
-	<StackPanel Background="White" >
-		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-			<ListBox Width="195" Height="250"/>
-			<Border Width="400" Height="250" Margin="5,0,0,0"/>
-		</StackPanel>
-		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
-			<Button Content="Open" Width="96" IsDefault="True"/>
-			<Button Content="Exit" Width="96" Margin="30,0,0,0" IsCancel="True"/>
-		</StackPanel>
-	</StackPanel>
-</UserControl>
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Text;
+
+namespace Pico_Editor.Utilities
+{
+	public static class Serializer
+	{
+		public static void ToFile<T>(T instance, string path) // Write to a file
+		{
+			try
+			{
+				using var fs = new FileStream(path, FileMode.Create); // Make file
+				var serializer = new DataContractSerializer(typeof(T));
+				serializer.WriteObject(fs, instance);
+			}
+			catch (Exception ex)
+			{
+
+				Debug.WriteLine(ex.Message); // TODO: make a proper log system
+			}
+		}
+
+		internal static T FromFile<T>(string path)
+		{
+			try
+			{
+				using var fs = new FileStream(path, FileMode.Open); // Read file
+				var serializer = new DataContractSerializer(typeof(T));
+				T instance = (T)serializer.ReadObject(fs);
+				return instance;
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine(ex.Message); // TODO: make a proper log system
+				return default(T);
+			}
+		}
+	}
+}

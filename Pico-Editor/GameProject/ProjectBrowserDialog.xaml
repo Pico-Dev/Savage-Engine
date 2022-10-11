@@ -33,7 +33,7 @@ SOFTWARE.
 		ResizeMode="NoResize"
 		WindowStartupLocation="CenterScreen"
         Title="Project Browser" Height="600" Width="800">
-    <Grid>
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto"/>
 			<RowDefinition />
