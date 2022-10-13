@@ -25,20 +25,34 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Pico_Editor
+namespace Pico_Editor.GameProject
 {
-	[DataContract(IsReference = true)]
-	public class ViewModelBase : INotifyPropertyChanged // Public class for impleminting INotify
+	[DataContract(Name = "Game")]
+	public class Project : ViewModelBase
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
+		public static string Extension { get; } = ".pico";
+		[DataMember]
+		public string Name { get; private set; }
+		[DataMember]
+		public string Path { get; private set; }
 
-		protected void OnPropertyChanged(string propertyName) // Handels changed string properies
+		public string FullPath => $"{Path}{Name}{Extension}";
+
+		[DataMember(Name = "Scenes")]
+		private ObservableCollection<Scene> _scenes = new ObservableCollection<Scene>();
+		public ReadOnlyObservableCollection<Scene> Scenes
+		{ get; }
+
+		public Project(string name, string path)
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // Invokes an event
+			Name = name;
+			Path = path;
+
+			_scenes.Add(new Scene(this, "Default Scene"));
 		}
 	}
 }

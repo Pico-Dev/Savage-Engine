@@ -25,20 +25,11 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.Serialization;
 using System.Text;
 
-namespace Pico_Editor
+namespace Pico_Editor.GameProject
 {
-	[DataContract(IsReference = true)]
-	public class ViewModelBase : INotifyPropertyChanged // Public class for impleminting INotify
+	class OpenProject : ViewModelBase
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		protected void OnPropertyChanged(string propertyName) // Handels changed string properies
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // Invokes an event
-		}
 	}
 }
