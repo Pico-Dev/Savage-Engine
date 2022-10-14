@@ -34,18 +34,19 @@ namespace Pico_Editor.Utilities
 {
 	public static class Serializer
 	{
-		public static void ToFile<T>(T instance, string path) // Write to a file
+		// Write to a file
+		public static void ToFile<T>(T instance, string path)
 		{
 			try
 			{
 				using var fs = new FileStream(path, FileMode.Create); // Make file
 				var serializer = new DataContractSerializer(typeof(T));
-				serializer.WriteObject(fs, instance);
+				serializer.WriteObject(fs, instance); // Write an xml file
 			}
 			catch (Exception ex)
 			{
-
-				Debug.WriteLine(ex.Message); // TODO: make a proper log system
+				Debug.WriteLine(ex.Message); 
+				// TODO: make a proper log system
 			}
 		}
 
@@ -55,7 +56,7 @@ namespace Pico_Editor.Utilities
 			{
 				using var fs = new FileStream(path, FileMode.Open); // Read file
 				var serializer = new DataContractSerializer(typeof(T));
-				T instance = (T)serializer.ReadObject(fs);
+				T instance = (T)serializer.ReadObject(fs); // Get the contents
 				return instance;
 			}
 			catch (Exception ex)

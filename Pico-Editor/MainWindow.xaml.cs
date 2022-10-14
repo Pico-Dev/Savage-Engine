@@ -27,6 +27,7 @@ SOFTWARE.
 using Pico_Editor.GameProject;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,7 +49,9 @@ namespace Pico_Editor
 		{
 			InitializeComponent();
 			Loaded += OnMainWindowLoaded; // Create refrence
+			Closing += OnMainWindowClosing; // Unload project
 		}
+
 
 		private void OnMainWindowLoaded(object sender, RoutedEventArgs e)
 		{
@@ -56,16 +59,23 @@ namespace Pico_Editor
 			OpenProjectBrowserDialog(); // Open the dialog window
 		}
 
+		private void OnMainWindowClosing(object sender, CancelEventArgs e)
+		{
+			Closing -= OnMainWindowClosing; // Deference
+			Project.Current?.Unload(); // Unload the project
+		}
+
 		private void OpenProjectBrowserDialog()
 		{
 			var projectBrowser = new ProjectBrowserDialog(); // Create instance of project browser
-			if (projectBrowser.ShowDialog() == false) // Test if user closes dialog window
+			if (projectBrowser.ShowDialog() == false || projectBrowser.DataContext == null) // Test if user closes dialog window or trhe project is null
 			{
 				Application.Current.Shutdown(); // Terminate the app
 			}
 			else
 			{
-				// Will Open project
+				Project.Current?.Unload(); // Unload old project if any
+				DataContext = projectBrowser.DataContext; // load the project
 			}
 		}
 	}

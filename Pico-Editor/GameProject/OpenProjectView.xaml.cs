@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace Pico_Editor.GameProject
 {
@@ -21,6 +22,34 @@ namespace Pico_Editor.GameProject
 		public OpenProjectView()
 		{
 			InitializeComponent();
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void OnOpen_Button_Click(object sender, RoutedEventArgs e)
+		{
+			OpenSelectedProject();
+		}
+
+		private void OnListBoxItem_Mouse_DoubleClick(object sender, RoutedEventArgs e)
+		{
+			OpenSelectedProject();
+		}
+
+		private void OpenSelectedProject()
+		{
+			var project = OpenProject.Open(projectsListBox.SelectedItem as ProjectData); // Load the selected project
+			bool dialogResult = false;
+			var win = Window.GetWindow(this);
+			if (project != null) // Set if it worked or not
+			{
+				dialogResult = true;
+			}
+			win.DialogResult = dialogResult;
+			win.Close();
 		}
 	}
 }

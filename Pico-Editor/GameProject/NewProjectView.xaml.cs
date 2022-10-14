@@ -48,12 +48,14 @@ namespace Pico_Editor.GameProject
 		private void OnCreate_Button_Click(object sender, RoutedEventArgs e)
 		{
 			var vm = DataContext as NewProject;
-			var projectPath = vm.CreateProject(templateListBox.SelectedItem as ProjectTemplate); // Make the selected project
+			var projectPath = vm.CreateProject(templateListBox.SelectedItem as ProjectTemplate); // Make the selected template
 			bool dialogResult = false;
 			var win = Window.GetWindow(this);
-			if (!string.IsNullOrEmpty(projectPath))
+			if (!string.IsNullOrEmpty(projectPath)) // Set if it worked or not
 			{
 				dialogResult = true;
+				var project = OpenProject.Open(new ProjectData() { ProjectName = vm.ProjectName, ProjectPath = projectPath }); // Get the project that can be used in the rest of the editor
+				win.DataContext = project;
 			}
 			win.DialogResult = dialogResult;
 			win.Close();
