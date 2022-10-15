@@ -1,4 +1,4 @@
-﻿<!--
+﻿/*
 	MIT License
 
 Copyright (c) 2022        Daniel McLarty
@@ -21,19 +21,41 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-	
-<Window x:Class="Pico_Editor.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Pico_Editor"
-		xmlns:editors="clr-namespace:Pico_Editor.Editors" 
-        mc:Ignorable="d"
-		WindowStartupLocation="CenterScreen"
-        Title="Pico Editor" Height="1080" Width="1920">
-    <Grid>
-		<editors:WorldEditorView/>
-	</Grid>
-</Window>
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Input;
+
+namespace Pico_Editor
+{
+	class RelayCommand<T> : ICommand
+	{
+		private readonly Action<T> _execute; // What needs to be done
+		private readonly Predicate<T> _canExecute; // What can be done
+
+		public event EventHandler CanExecuteChanged
+		{
+			add { CommandManager.RequerySuggested += value; }
+			remove { CommandManager.RequerySuggested -= value; }
+		}
+
+		public bool CanExecute(object parameter)
+		{
+			return _canExecute?.Invoke((T)parameter) ?? true; // If not null return the vale if null return true
+		}
+
+		public void Execute(object parameter)
+		{
+			_execute((T)parameter); // Return the value
+		}
+
+		public RelayCommand(Action<T> execute, Predicate<T> canExecute = null)
+		{
+			_execute = execute ?? throw new ArgumentNullException(nameof(execute)); // If execute is null throw an exception
+			_canExecute = canExecute; // This can be null
+
+		}
+	}
+}

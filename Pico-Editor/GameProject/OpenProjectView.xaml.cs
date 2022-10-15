@@ -22,6 +22,14 @@ namespace Pico_Editor.GameProject
 		public OpenProjectView()
 		{
 			InitializeComponent();
+
+			// Set the first item as the selected item if one existis
+			Loaded += (s, e) =>
+			{
+				var item = projectsListBox.ItemContainerGenerator
+				.ContainerFromIndex(projectsListBox.SelectedIndex) as ListBoxItem;
+				item?.Focus();
+			};
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
@@ -47,6 +55,7 @@ namespace Pico_Editor.GameProject
 			if (project != null) // Set if it worked or not
 			{
 				dialogResult = true;
+				win.DataContext = project;
 			}
 			win.DialogResult = dialogResult;
 			win.Close();

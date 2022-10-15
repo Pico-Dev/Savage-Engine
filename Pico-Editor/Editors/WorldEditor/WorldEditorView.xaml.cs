@@ -1,4 +1,4 @@
-﻿<!--
+﻿/*
 	MIT License
 
 Copyright (c) 2022        Daniel McLarty
@@ -21,19 +21,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-	
-<Window x:Class="Pico_Editor.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Pico_Editor"
-		xmlns:editors="clr-namespace:Pico_Editor.Editors" 
-        mc:Ignorable="d"
-		WindowStartupLocation="CenterScreen"
-        Title="Pico Editor" Height="1080" Width="1920">
-    <Grid>
-		<editors:WorldEditorView/>
-	</Grid>
-</Window>
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Pico_Editor.Editors
+{
+	/// <summary>
+	/// Interaction logic for WorldEditorView.xaml
+	/// </summary>
+	public partial class WorldEditorView : UserControl
+	{
+		public WorldEditorView()
+		{
+			InitializeComponent();
+		}
+	}
+}
