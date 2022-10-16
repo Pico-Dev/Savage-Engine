@@ -23,11 +23,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Pico_Editor.Components;
+using Pico_Editor.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Windows.Input;
 
 namespace Pico_Editor.GameProject
 {
@@ -67,11 +71,65 @@ namespace Pico_Editor.GameProject
 			}
 		}
 
+		[DataMember(Name = nameof(GameEntities))]
+		private readonly ObservableCollection<GameEntity> _gameEntities = new ObservableCollection<GameEntity>();
+		public ReadOnlyObservableCollection<GameEntity> GameEntities { get; private set; }
+
+		public ICommand AddGameEntityCommand { get; set; }
+		public ICommand RemoveGameEntityCommand { get; set; }
+
+		private void AddGameEntity(GameEntity entity)
+		{
+			Debug.Assert(!_gameEntities.Contains(entity)); // Cant be a duplicate
+			_gameEntities.Add(entity);
+		}
+
+		private void RemoveGameEntity(GameEntity entity)
+		{
+			Debug.Assert(_gameEntities.Contains(entity)); // Must exist
+			_gameEntities.Remove(entity);
+		}
+
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			if (_gameEntities != null)
+			{
+				GameEntities = new ReadOnlyObservableCollection<GameEntity>(_gameEntities);
+				OnPropertyChanged(nameof(GameEntity)); // Updates bindings
+			}
+
+			//Define add entity
+			AddGameEntityCommand = new RelayCommand<GameEntity>(x =>
+			{
+				AddGameEntity(x); // Make the entity
+				var entityIndex = _gameEntities.Count - 1; // Remember the index of last entity
+
+				Project.UndoRedo.Add(new UndoRedoAction(
+					() => RemoveGameEntity(x), // Remove the entity
+					() => _gameEntities.Insert(entityIndex, x), // Readd the entity at the same index
+					$"Add {x.Name} to {Name}")); // Name of the action
+			});
+
+			RemoveGameEntityCommand = new RelayCommand<GameEntity>(x =>
+			{
+				var entityIndex = _gameEntities.IndexOf(x); // Get the entity index
+				RemoveGameEntity(x); // Remove the entity
+
+				Project.UndoRedo.Add(new UndoRedoAction(
+					() => _gameEntities.Insert(entityIndex, x), // Readd the entity at the same index
+					() => RemoveGameEntity(x), // Remove the entity again,
+					$"Remove {x.Name}")); // Name of the action
+			}); // Look if entity is active
+
+		}
+
 		public Scene(Project project, string name)
 		{
 			Debug.Assert(project != null);
 			Project = project;
 			Name = name;
+			OnDeserialized(new StreamingContext());
 		}
 	}
 }

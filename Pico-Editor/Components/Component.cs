@@ -23,49 +23,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Pico_Editor.Components;
-using Pico_Editor.GameProject;
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.Serialization;
 using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Pico_Editor.Editors
+namespace Pico_Editor.Components
 {
-	/// <summary>
-	/// Interaction logic for ProjectLayoutView.xaml
-	/// </summary>
-	public partial class ProjectLayoutView : UserControl
+	[DataContract]
+	public class Component : ViewModelBase
 	{
-		public ProjectLayoutView()
-		{
-			InitializeComponent();
-		}
+		[DataMember]
+		public GameEntity Owner { get; private set; }
 
-		private void OnAddGameEntity_Button_Click(object sender, RoutedEventArgs e)
+		public Component(GameEntity owner)
 		{
-			var btn = sender as Button;
-			var vm = btn.DataContext as Scene; // Get Data context
-			vm.AddGameEntityCommand.Execute(new GameEntity(vm) { Name = "Empty Game Entity"}); // Add game entity
-		}
-
-		private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-
-		}
-
-		private void OnGameEntities_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			var entity = (sender as ListBox).SelectedItems[0]; // Get selected item
-			GameEntityView.Instance.DataContext = entity;
+			Debug.Assert(owner != null); // Can't be null
+			Owner = owner; // Internal refrence
 		}
 	}
 }

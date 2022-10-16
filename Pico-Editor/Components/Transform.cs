@@ -23,49 +23,64 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Pico_Editor.Components;
-using Pico_Editor.GameProject;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
+using System.Runtime.Serialization;
 using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Pico_Editor.Editors
+namespace Pico_Editor.Components
 {
-	/// <summary>
-	/// Interaction logic for ProjectLayoutView.xaml
-	/// </summary>
-	public partial class ProjectLayoutView : UserControl
+	[DataContract]
+	public class Transform : Component
 	{
-		public ProjectLayoutView()
+		private Vector3 _position;
+		[DataMember]
+		public Vector3 Position
 		{
-			InitializeComponent();
+			get => _position;
+			set
+			{
+				if (_position != value)
+				{
+					_position = value;
+					OnPropertyChanged(nameof(Position));
+				}
+			}
 		}
 
-		private void OnAddGameEntity_Button_Click(object sender, RoutedEventArgs e)
+		private Vector3 _rotation;
+		[DataMember]
+		public Vector3 Rotation
 		{
-			var btn = sender as Button;
-			var vm = btn.DataContext as Scene; // Get Data context
-			vm.AddGameEntityCommand.Execute(new GameEntity(vm) { Name = "Empty Game Entity"}); // Add game entity
+			get => _rotation;
+			set
+			{
+				if (_rotation != value)
+				{
+					_rotation = value;
+					OnPropertyChanged(nameof(Rotation));
+				}
+			}
 		}
 
-		private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private Vector3 _scale;
+		[DataMember]
+		public Vector3 Scale
 		{
-
+			get => _scale;
+			set
+			{
+				if (_scale != value)
+				{
+					_scale = value;
+					OnPropertyChanged(nameof(Scale));
+				}
+			}
 		}
 
-		private void OnGameEntities_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		public Transform(GameEntity owner) : base(owner)
 		{
-			var entity = (sender as ListBox).SelectedItems[0]; // Get selected item
-			GameEntityView.Instance.DataContext = entity;
 		}
 	}
 }
