@@ -25,8 +25,10 @@ SOFTWARE.
 
 using Pico_Editor.Components;
 using Pico_Editor.GameProject;
+using Pico_Editor.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,6 +39,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 
 namespace Pico_Editor.Editors
 {
@@ -57,15 +60,31 @@ namespace Pico_Editor.Editors
 			vm.AddGameEntityCommand.Execute(new GameEntity(vm) { Name = "Empty Game Entity"}); // Add game entity
 		}
 
-		private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-
-		}
-
 		private void OnGameEntities_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var entity = (sender as ListBox).SelectedItems[0]; // Get selected item
-			GameEntityView.Instance.DataContext = entity;
+			GameEntityView.Instance.DataContext = null;
+			var listBox = sender as ListBox; // Get list box of sender
+			if (e.AddedItems.Count > 0)
+			{
+				GameEntityView.Instance.DataContext = listBox.SelectedItems[0]; // Get selected item
+			}
+			
+			var newSelection = listBox.SelectedItems.Cast<GameEntity>().ToList(); // Get list of new selection
+			var previousSelection = newSelection.Except(e.AddedItems.Cast<GameEntity>()).Concat(e.RemovedItems.Cast<GameEntity>()).ToList(); // Get list of old selection
+
+			Project.UndoRedo.Add(new UndoRedoAction(
+				() => // Undo Action
+				{
+					listBox.UnselectAll();
+					previousSelection.ForEach(x => (listBox.ItemContainerGenerator.ContainerFromItem(x) as ListBoxItem).IsSelected = true);
+				},
+				() => // Redo Action
+				{
+					listBox.UnselectAll();
+					newSelection.ForEach(x => (listBox.ItemContainerGenerator.ContainerFromItem(x) as ListBoxItem).IsSelected = true);
+				},
+				"Selection Changed" // Name of action
+				));
 		}
 	}
 }

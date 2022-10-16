@@ -35,21 +35,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Linq;
 
-namespace Pico_Editor.Editors
+namespace Pico_Editor.Utilities
 {
 	/// <summary>
-	/// Interaction logic for GameEntityView.xaml
+	/// Interaction logic for LoggerView.xaml
 	/// </summary>
-	public partial class GameEntityView : UserControl
+	public partial class LoggerView : UserControl
 	{
-		public static GameEntityView Instance { get; private set; }
-		public GameEntityView()
+		public LoggerView()
 		{
 			InitializeComponent();
-			DataContext = null;
-			Instance = this;
 		}
 	}
 }

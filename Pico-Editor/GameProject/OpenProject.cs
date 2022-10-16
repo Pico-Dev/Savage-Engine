@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Windows.Shapes;
 
 namespace Pico_Editor.GameProject
 {
@@ -123,7 +124,8 @@ namespace Pico_Editor.GameProject
 			catch (Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
-				//TODO: Add propper logging
+				Logger.Log(MessageType.Error, $"Failed to read project data");
+				throw;
 			}
 		}
 	}

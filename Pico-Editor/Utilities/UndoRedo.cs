@@ -59,6 +59,7 @@ namespace Pico_Editor.Utilities
 			Name = name;
 		}
 
+		// Basic undo redo constructor
 		public UndoRedoAction(Action undo, Action redo, string name)
 			: this(name)
 		{
@@ -66,10 +67,19 @@ namespace Pico_Editor.Utilities
 			_undoAction = undo;
 			_redoAction = redo;
 		}
+
+		// Diffrent undo redo constructor
+		public UndoRedoAction(string property, object instance, object undoValue, object redoValue, string name) :
+			this(
+				() => instance.GetType().GetProperty(property).SetValue(instance, undoValue),
+				() => instance.GetType().GetProperty(property).SetValue(instance, redoValue),
+				name)
+		{ }
 	}
 
 	public class UndoRedo
 	{
+		private bool _enableAdd = true;
 		private readonly ObservableCollection<IUndoRedo> _redoList = new ObservableCollection<IUndoRedo>();
 		private readonly ObservableCollection<IUndoRedo> _undoList = new ObservableCollection<IUndoRedo>();
 		public ReadOnlyObservableCollection<IUndoRedo> RedoList { get; }
@@ -84,8 +94,11 @@ namespace Pico_Editor.Utilities
 
 		public void Add(IUndoRedo cmd)
 		{
-			_undoList.Add(cmd);
-			_redoList.Clear();
+			if (_enableAdd)
+			{
+				_undoList.Add(cmd);
+				_redoList.Clear();
+			}
 		}
 
 		public void Undo()
@@ -94,7 +107,9 @@ namespace Pico_Editor.Utilities
 			{
 				var cmd = _undoList.Last(); // Find the most recent thing
 				_undoList.RemoveAt(_undoList.Count -1); // Remove the Command form the list
+				_enableAdd = false; // Lock actions
 				cmd.Undo();
+				_enableAdd = true; // Unlock
 				_redoList.Insert(0, cmd); // Add it to the top of the redo list
 			}
 		}
@@ -105,7 +120,9 @@ namespace Pico_Editor.Utilities
 			{
 				var cmd = _redoList.First(); // Find the most recent thing
 				_redoList.RemoveAt(0); // Remove the Command form the list
+				_enableAdd = false; // Lock actions
 				cmd.Redo();
+				_enableAdd = true; // Unlock
 				_undoList.Add(cmd); // Add it to the top of the undo list
 			}
 		}

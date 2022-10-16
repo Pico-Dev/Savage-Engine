@@ -43,8 +43,8 @@ SOFTWARE.
 			<ToggleButton Content="Create Project" x:Name="createProjectButton" FontSize="32" Margin="30,0,0,0" Click="OnToggleButton_Click"/>
 		</StackPanel>
 		<StackPanel Orientation="Horizontal" Grid.Row="1" x:Name="browserContent">
-			<local:OpenProjectView/>
-			<local:NewProjectView/>
+			<local:OpenProjectView x:Name="openProjectView"/>
+			<local:NewProjectView x:Name="newProjectView"/>
 		</StackPanel>
 	</Grid>
 </Window>

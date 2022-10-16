@@ -28,28 +28,38 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Linq;
 
-namespace Pico_Editor.Editors
+namespace Pico_Editor.Dictionaries
 {
-	/// <summary>
-	/// Interaction logic for GameEntityView.xaml
-	/// </summary>
-	public partial class GameEntityView : UserControl
+	public partial class ControlTemplates : ResourceDictionary
 	{
-		public static GameEntityView Instance { get; private set; }
-		public GameEntityView()
+		private void OnTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-			InitializeComponent();
-			DataContext = null;
-			Instance = this;
+			var textBox = sender as TextBox; // Get textbox refrence
+			var exp = textBox.GetBindingExpression(TextBox.TextProperty);
+			if (exp == null) return; // Cant do anything
+
+			// Take new value
+			if(e.Key == Key.Enter)
+			{
+				if(textBox.Tag is ICommand command && command.CanExecute(textBox.Text))
+				{
+					command.Execute(textBox.Text);
+				}
+				else
+				{
+					exp.UpdateSource();
+				}
+				Keyboard.ClearFocus();
+				e.Handled = true;
+			}
+			// Keep old value
+			else if(e.Key == Key.Escape)
+			{
+				exp.UpdateTarget();
+				Keyboard.ClearFocus();
+			}
 		}
 	}
 }

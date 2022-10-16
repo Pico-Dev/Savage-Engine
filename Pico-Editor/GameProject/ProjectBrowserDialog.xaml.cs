@@ -25,6 +25,7 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,6 +43,18 @@ namespace Pico_Editor.GameProject
 		public ProjectBrowserDialog()
 		{
 			InitializeComponent();
+			Loaded += OnProjectBrowserLoaded;
+		}
+
+		private void OnProjectBrowserLoaded(object sender, RoutedEventArgs e)
+		{
+			Loaded -= OnProjectBrowserLoaded;
+			if (!OpenProject.Projects.Any())
+			{
+				openProjectButton.IsEnabled = false;
+				openProjectButton.Visibility = Visibility.Hidden;
+				OnToggleButton_Click(createProjectButton, new RoutedEventArgs());
+			}
 		}
 
 		private void OnToggleButton_Click(object sendor, RoutedEventArgs e)

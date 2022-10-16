@@ -196,8 +196,8 @@ namespace Pico_Editor.GameProject
 			catch (Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
-				// TODO: Make proper log system
-				return string.Empty;
+				Logger.Log(MessageType.Error, $"Failed to create {ProjectName}");
+				throw;
 			}
 		}
 
@@ -223,7 +223,8 @@ namespace Pico_Editor.GameProject
 			catch(Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
-				// TODO: Make proper log system
+				Logger.Log(MessageType.Error, $"Failed to read project templates");
+				throw;
 			}
 		}
 	}

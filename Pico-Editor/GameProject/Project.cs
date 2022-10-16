@@ -97,11 +97,12 @@ namespace Pico_Editor.GameProject
 
 		public void Unload()
 		{
-
+			UndoRedo.Reset();
 		}
 		public static void save(Project project) // Save
 		{
 			Serializer.ToFile(project, project.FullPath);
+			Logger.Log(MessageType.Info, $"Project saved to {project.FullPath}");
 		}
 
 		[OnDeserialized]

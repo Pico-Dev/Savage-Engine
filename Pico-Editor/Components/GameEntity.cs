@@ -26,11 +26,15 @@ SOFTWARE.
 
 using Pico_Editor.GameProject;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Linq.Expressions;
+using System.Windows.Input;
+using Pico_Editor.Utilities;
 
 namespace Pico_Editor.Components
 {
@@ -38,6 +42,21 @@ namespace Pico_Editor.Components
 	[KnownType(typeof(Transform))]
 	public class GameEntity : ViewModelBase
 	{
+		private bool _isEnbaled = true;
+		[DataMember]
+		public bool IsEnbaled
+		{
+			get => _isEnbaled;
+			set
+			{
+				if (_isEnbaled != value)
+				{
+					_isEnbaled = value;
+					OnPropertyChanged(nameof(IsEnbaled));
+				}
+			}
+		}
+
 		private string _name;
 		[DataMember]
 		public string Name
@@ -59,6 +78,9 @@ namespace Pico_Editor.Components
 		private readonly ObservableCollection<Component> _components = new ObservableCollection<Component>();
 		public ReadOnlyObservableCollection<Component> Components { get; private set; }
 
+		public ICommand RenameCommand { get; private set; }
+		public ICommand IsEnableCommand { get; private set; }
+
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext contex)
 		{
@@ -67,6 +89,22 @@ namespace Pico_Editor.Components
 				Components = new ReadOnlyObservableCollection<Component>(_components);
 				OnPropertyChanged(nameof(Components));
 			}
+
+			RenameCommand = new RelayCommand<string>(x =>
+			{
+				var oldName = _name; //Remeber old name
+				Name = x;
+
+				Project.UndoRedo.Add(new UndoRedoAction(nameof(Name), this, oldName , x, $"Renaming entity '{oldName}' to '{x}'"));
+			}, x => x != _name);
+
+			IsEnableCommand = new RelayCommand<bool>(x =>
+			{
+				var oldValue = _isEnbaled; //Remeber old value
+				IsEnbaled = x;
+
+				Project.UndoRedo.Add(new UndoRedoAction(nameof(IsEnbaled), this, oldValue, x, x ? $"Enable {Name}" : $"Disable {Name}"));
+			});
 		}
 
 		public GameEntity(Scene scene)
@@ -74,6 +112,7 @@ namespace Pico_Editor.Components
 			Debug.Assert(scene != null); // It should never be null ever
 			ParentScene = scene; // Get internal refrence
 			_components.Add(new Transform(this));
+			OnDeserialized(new StreamingContext());
 		}
 	}
 }
