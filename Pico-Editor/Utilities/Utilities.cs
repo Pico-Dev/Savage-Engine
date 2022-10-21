@@ -26,40 +26,24 @@ SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Pico_Editor.Utilities
 {
-	/// <summary>
-	/// Interaction logic for LoggerView.xaml
-	/// </summary>
-	public partial class LoggerView : UserControl
+	static public class MathUtil
 	{
-		public LoggerView()
+		public static float Epsilon => 0.00001f;
+
+		// Allow for close enough becasue floats are evil
+		public static bool IsTheSameAs(this float value, float other)
 		{
-			InitializeComponent();
+			return Math.Abs(value - other) < Epsilon;
 		}
 
-		private void OnClear_Button_Click(object sender, RoutedEventArgs e)
+		// Allow for close enough with nullable values becasue floats are evil
+		public static bool IsTheSameAs(this float? value, float? other)
 		{
-			Logger.Clear();
-		}
-
-		private void OnMessageFileter_Button_Click(object sender, RoutedEventArgs e)
-		{
-			var filter = 0x0;
-			if (toggleInfo.IsChecked == true) filter |= (int)MessageType.Info;
-			if (toggleWarning.IsChecked == true) filter |= (int)MessageType.Warning;
-			if (toggleError.IsChecked == true) filter |= (int)MessageType.Error;
-			Logger.SetMessageFilter(filter);
+			if (!value.HasValue || !other.HasValue) return false;
+			return Math.Abs(value.Value - other.Value) < Epsilon;
 		}
 	}
 }

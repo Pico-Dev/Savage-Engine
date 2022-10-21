@@ -59,11 +59,12 @@ SOFTWARE.
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<TextBlock Text="Name" Grid.Column="0" Margin="5,0,0,0"/>
-				<TextBox Text="{Binding Name}" Grid.Column="1" Tag="{Binding RenameCommand}"/>
+				<TextBox Text="{Binding Name, UpdateSourceTrigger=Explicit}" Grid.Column="1"
+						 GotKeyboardFocus="OnName_TextBox_GotKeyboardFocus"
+						 LostKeyboardFocus="OnName_TextBox_LostKeyboardFocus"/>
 				<StackPanel Orientation="Horizontal" Grid.Column="2">
 					<TextBlock Text="Enabled" Margin="5,0,0,0"/>
-					<CheckBox IsChecked="{Binding IsEnbaled, Mode=OneWay}" Margin="5,0" VerticalAlignment="Center" Command="{Binding IsEnableCommand}" 
-							  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"/>
+					<CheckBox IsChecked="{Binding IsEnbaled, Mode=OneWay}" Margin="5,0" VerticalAlignment="Center" Click="OnIsEnabled_CheckBox_Click"/>
 				</StackPanel>
 			</Grid>
 			<ItemsControl ItemsSource="{Binding Components}">

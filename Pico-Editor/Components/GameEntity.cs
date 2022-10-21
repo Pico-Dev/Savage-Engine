@@ -35,12 +35,14 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Windows.Input;
 using Pico_Editor.Utilities;
+using System.ComponentModel;
+using System.Windows.Documents;
 
 namespace Pico_Editor.Components
 {
 	[DataContract]
 	[KnownType(typeof(Transform))]
-	public class GameEntity : ViewModelBase
+	class GameEntity : ViewModelBase
 	{
 		private bool _isEnbaled = true;
 		[DataMember]
@@ -78,9 +80,6 @@ namespace Pico_Editor.Components
 		private readonly ObservableCollection<Component> _components = new ObservableCollection<Component>();
 		public ReadOnlyObservableCollection<Component> Components { get; private set; }
 
-		public ICommand RenameCommand { get; private set; }
-		public ICommand IsEnableCommand { get; private set; }
-
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext contex)
 		{
@@ -89,22 +88,6 @@ namespace Pico_Editor.Components
 				Components = new ReadOnlyObservableCollection<Component>(_components);
 				OnPropertyChanged(nameof(Components));
 			}
-
-			RenameCommand = new RelayCommand<string>(x =>
-			{
-				var oldName = _name; //Remeber old name
-				Name = x;
-
-				Project.UndoRedo.Add(new UndoRedoAction(nameof(Name), this, oldName , x, $"Renaming entity '{oldName}' to '{x}'"));
-			}, x => x != _name);
-
-			IsEnableCommand = new RelayCommand<bool>(x =>
-			{
-				var oldValue = _isEnbaled; //Remeber old value
-				IsEnbaled = x;
-
-				Project.UndoRedo.Add(new UndoRedoAction(nameof(IsEnbaled), this, oldValue, x, x ? $"Enable {Name}" : $"Disable {Name}"));
-			});
 		}
 
 		public GameEntity(Scene scene)
@@ -113,6 +96,125 @@ namespace Pico_Editor.Components
 			ParentScene = scene; // Get internal refrence
 			_components.Add(new Transform(this));
 			OnDeserialized(new StreamingContext());
+		}
+	}
+
+	// Multiselection
+	abstract class MSEntity : ViewModelBase
+	{
+		private bool _enableUpdates = true; // Enables update toi selected entities
+		private bool? _isEnbaled;
+		[DataMember]
+		public bool? IsEnbaled
+		{
+			get => _isEnbaled;
+			set
+			{
+				if (_isEnbaled != value)
+				{
+					_isEnbaled = value;
+					OnPropertyChanged(nameof(IsEnbaled));
+				}
+			}
+		}
+
+		private string _name;
+		[DataMember]
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				if (_name != value)
+				{
+					_name = value;
+					OnPropertyChanged(nameof(Name));
+				}
+			}
+		}
+
+		private readonly ObservableCollection<IMSComponent> _components = new ObservableCollection<IMSComponent>();
+		public ReadOnlyObservableCollection<IMSComponent> Components { get; }
+
+		public List<GameEntity> SelectedEntities { get; }
+
+		public static float? GetMixedValue(List<GameEntity> entities, Func<GameEntity, float> getProperty)
+		{
+			var value = getProperty(entities.First()); // Get property of first entity
+			foreach (var entity in entities.Skip(1)) // Get value of all other entities
+			{
+				if(!value.IsTheSameAs(getProperty(entity))) // If they differ return null
+				{
+					return null;
+				}
+			}
+			return value;
+		}
+
+		public static bool? GetMixedValue(List<GameEntity> entities, Func<GameEntity, bool> getProperty)
+		{
+			var value = getProperty(entities.First()); // Get property of first entity
+			foreach (var entity in entities.Skip(1)) // Get value of all other entities
+			{
+				if (value != getProperty(entity)) // If they differ return null
+				{
+					return null;
+				}
+			}
+			return value;
+		}
+
+		public static string GetMixedValue(List<GameEntity> entities, Func<GameEntity, string> getProperty)
+		{
+			var value = getProperty(entities.First()); // Get property of first entity
+			foreach (var entity in entities.Skip(1)) // Get value of all other entities
+			{
+				if (value != getProperty(entity)) // If they differ return null
+				{
+					return null;
+				}
+			}
+			return value;
+		}
+		protected virtual bool UpdateGameEntities(string propertyName)
+		{
+			switch (propertyName)
+			{
+				case nameof(IsEnbaled): SelectedEntities.ForEach(x => x.IsEnbaled = IsEnbaled.Value); return true; // Update all values for IsEnabled
+				case nameof(Name): SelectedEntities.ForEach(x => x.Name = Name); return true; // Update all values for Name
+			}
+			return false;
+		}
+
+		protected virtual bool UpdateMSGameEntities()
+		{
+			IsEnbaled = GetMixedValue(SelectedEntities, new Func<GameEntity, bool>(x => x.IsEnbaled));
+			Name = GetMixedValue(SelectedEntities, new Func<GameEntity, string>(x => x.Name));
+
+			return true;
+		}
+
+		public void Refresh()
+		{
+			_enableUpdates = false;
+			UpdateMSGameEntities();
+			_enableUpdates = true;
+		}
+
+		public MSEntity(List<GameEntity> entities)
+		{
+			Debug.Assert(entities?.Any() == true); // Can't be null or empty
+			Components = new ReadOnlyObservableCollection<IMSComponent>(_components);
+			SelectedEntities = entities;
+			PropertyChanged += (s, e) => { if(_enableUpdates) UpdateGameEntities(e.PropertyName); }; // Update properies of all game entities that were changed
+		}
+	}
+
+	class MSGameEntity : MSEntity
+	{
+		public MSGameEntity(List<GameEntity> entities) : base(entities)
+		{
+			Refresh();
 		}
 	}
 }

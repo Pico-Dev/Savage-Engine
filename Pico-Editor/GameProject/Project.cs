@@ -39,7 +39,7 @@ using System.Windows.Input;
 namespace Pico_Editor.GameProject
 {
 	[DataContract(Name = "Game")]
-	public class Project : ViewModelBase
+	class Project : ViewModelBase
 	{
 		public static string Extension { get; } = ".pico";
 		[DataMember]

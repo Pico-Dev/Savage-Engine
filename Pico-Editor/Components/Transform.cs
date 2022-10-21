@@ -32,7 +32,7 @@ using System.Text;
 namespace Pico_Editor.Components
 {
 	[DataContract]
-	public class Transform : Component
+	class Transform : Component
 	{
 		private Vector3 _position;
 		[DataMember]

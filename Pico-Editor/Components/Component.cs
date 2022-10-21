@@ -26,15 +26,19 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text;
 
 namespace Pico_Editor.Components
 {
+	interface IMSComponent { }
+
 	[DataContract]
-	public class Component : ViewModelBase
+	abstract class Component : ViewModelBase
 	{
+
 		[DataMember]
 		public GameEntity Owner { get; private set; }
 
@@ -43,5 +47,10 @@ namespace Pico_Editor.Components
 			Debug.Assert(owner != null); // Can't be null
 			Owner = owner; // Internal refrence
 		}
+	}
+
+	abstract class MSComponent<T> : ViewModelBase, IMSComponent where T : Component
+	{
+
 	}
 }

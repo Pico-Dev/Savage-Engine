@@ -62,13 +62,7 @@ namespace Pico_Editor.Editors
 
 		private void OnGameEntities_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			GameEntityView.Instance.DataContext = null;
-			var listBox = sender as ListBox; // Get list box of sender
-			if (e.AddedItems.Count > 0)
-			{
-				GameEntityView.Instance.DataContext = listBox.SelectedItems[0]; // Get selected item
-			}
-			
+			var listBox = sender as ListBox; // Get list box of sender			
 			var newSelection = listBox.SelectedItems.Cast<GameEntity>().ToList(); // Get list of new selection
 			var previousSelection = newSelection.Except(e.AddedItems.Cast<GameEntity>()).Concat(e.RemovedItems.Cast<GameEntity>()).ToList(); // Get list of old selection
 
@@ -85,6 +79,13 @@ namespace Pico_Editor.Editors
 				},
 				"Selection Changed" // Name of action
 				));
+
+			MSGameEntity msEntity = null;
+			if (newSelection.Any())
+			{
+				msEntity = new MSGameEntity(newSelection);
+			}
+			GameEntityView.Instance.DataContext = msEntity;
 		}
 	}
 }
