@@ -30,7 +30,7 @@ SOFTWARE.
 namespace pico::transform {
 
 	// Contains initilization information for transform component
-	struct inti_info
+	struct init_info
 	{
 		f32 position[3]{};
 		f32 rotation[4]{};
@@ -38,7 +38,7 @@ namespace pico::transform {
 	};
 
 	// Create transform component
-	component create_transform(const inti_info& info, game_entity::entity entity);
+	component create_transform(const init_info& info, game_entity::entity entity);
 	// Remove transform component
 	void remove_transform(component c);
 }
