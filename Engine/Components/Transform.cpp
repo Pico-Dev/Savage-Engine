@@ -23,7 +23,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
-#include "CommonHeaders.h"
-#include "ID.h"
-#include "..\EngineAPI\GameEntity.h"
+#include "Transform.h"
+#include "Entity.h"
+
+namespace primal::transform
+{
+	namespace {
+
+		utl::vector<math::v3> position;
+		utl::vector<math::v4> rotation;
+		utl::vector<math::v3> scale;
+
+	} // Anonymous namespace
+}

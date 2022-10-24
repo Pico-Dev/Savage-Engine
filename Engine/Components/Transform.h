@@ -26,21 +26,19 @@ SOFTWARE.
 #pragma once
 #include "ComponentsCommon.h"
 
-namespace pico::transform {
 
-	// Define typed ID for transform component
-	DEFINE_TYPED_ID(transform_id);
+namespace pico::transform {
 
 	// Contains initilization information for transform component
 	struct inti_info
 	{
-		f32 positon[3]{};
+		f32 position[3]{};
 		f32 rotation[4]{};
 		f32 scale[3]{1.f, 1.f, 1.f};
 	};
 
 	// Create transform component
-	transform_id create_transform(const inti_info& info, game_entity::entity_id entity_id);
+	component create_transform(const inti_info& info, game_entity::entity entity);
 	// Remove transform component
-	void remove_transform(transform_id id);
+	void remove_transform(component c);
 }

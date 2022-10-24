@@ -24,6 +24,27 @@ SOFTWARE.
 */
 
 #pragma once
-#include "CommonHeaders.h"
-#include "ID.h"
-#include "..\EngineAPI\GameEntity.h"
+
+#include "..\Components\ComponentsCommon.h"
+#include "TransformComponent.h"
+
+namespace pico::game_entity {
+
+	DEFINE_TYPED_ID(entity_id);
+
+	class entity {
+	public:
+		// When making an instance of this class without a parameter for the constructor it will return an invalid ID
+		constexpr explicit entity(entity_id id) : _id{ id } {}
+		constexpr entity() : _id{ id::invalid_id } {}
+		// If the entity has a valid ID it will return that
+		constexpr entity_id get_id() const { return _id; }
+		// Check if ID is valid
+		constexpr bool is_valid() const { return id::is_valid(_id); }
+
+		// Get the transform
+		transform::component transform() const;
+	private:
+		entity_id _id;
+	};
+}

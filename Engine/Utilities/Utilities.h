@@ -24,6 +24,29 @@ SOFTWARE.
 */
 
 #pragma once
-#include "CommonHeaders.h"
-#include "ID.h"
-#include "..\EngineAPI\GameEntity.h"
+
+// Set use of custom versions of STL functions
+#define USE_STL_VECTOR 1
+#define USE_STL_DEQUE 1
+
+#if USE_STL_VECTOR
+#include <vector>
+namespace pico::utl {
+	template<typename T>
+	using vector = std::vector<T>;
+}
+#endif
+
+#if USE_STL_DEQUE
+#include <deque>
+namespace pico::utl {
+	template<typename T>
+	using deque = std::deque<T>;
+}
+#endif
+
+namespace pcio::util {
+
+	// TODO: make custom version of STL functions
+
+}

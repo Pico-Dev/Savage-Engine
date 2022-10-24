@@ -43,10 +43,10 @@ namespace pico {
 		};
 
 		// Create game entity and get its index
-		entity_id create_game_entity(const entity_info& info);
+		entity create_game_entity(const entity_info& info);
 		// Remove game entity
-		void remove_game_entity(entity_id id);
-		// Check if entity has same generation as sopt
-		bool is_alive(entity_id id);
+		void remove_game_entity(entity e);
+		// Check if entity has same generation as spot
+		bool is_alive(entity e);
 	}
 }
