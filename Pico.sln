@@ -7,20 +7,40 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pico-Editor", "Pico-Editor\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineTest", "EngineTest\EngineTest.vcxproj", "{DEA1E164-168C-46F1-B150-F8EF86D1156E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D9256739-6711-4DBF-B730-7F6C67FA3A18}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{D9256739-6711-4DBF-B730-7F6C67FA3A18}.Debug|x64.Build.0 = Debug|Any CPU
+		{D9256739-6711-4DBF-B730-7F6C67FA3A18}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D9256739-6711-4DBF-B730-7F6C67FA3A18}.Debug|x86.Build.0 = Debug|Any CPU
 		{D9256739-6711-4DBF-B730-7F6C67FA3A18}.Release|x64.ActiveCfg = Release|Any CPU
 		{D9256739-6711-4DBF-B730-7F6C67FA3A18}.Release|x64.Build.0 = Release|Any CPU
+		{D9256739-6711-4DBF-B730-7F6C67FA3A18}.Release|x86.ActiveCfg = Release|Any CPU
+		{D9256739-6711-4DBF-B730-7F6C67FA3A18}.Release|x86.Build.0 = Release|Any CPU
 		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}.Debug|x64.ActiveCfg = Debug|x64
 		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}.Debug|x64.Build.0 = Debug|x64
+		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}.Debug|x86.ActiveCfg = Debug|x64
+		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}.Debug|x86.Build.0 = Debug|x64
 		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}.Release|x64.ActiveCfg = Release|x64
 		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}.Release|x64.Build.0 = Release|x64
+		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}.Release|x86.ActiveCfg = Release|x64
+		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}.Release|x86.Build.0 = Release|x64
+		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Debug|x64.ActiveCfg = Debug|x64
+		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Debug|x64.Build.0 = Debug|x64
+		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Debug|x86.ActiveCfg = Debug|Win32
+		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Debug|x86.Build.0 = Debug|Win32
+		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Release|x64.ActiveCfg = Release|x64
+		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Release|x64.Build.0 = Release|x64
+		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Release|x86.ActiveCfg = Release|Win32
+		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
