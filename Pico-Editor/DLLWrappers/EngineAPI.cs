@@ -35,7 +35,7 @@ using System.Text;
 namespace Pico_Editor.EngineAPIStructs
 {
 	[StructLayout(LayoutKind.Sequential)]
-	class TransformCompoent
+	class TransformComponent
 	{
 		public Vector3 Position;
 		public Vector3 Rotation;
@@ -45,7 +45,7 @@ namespace Pico_Editor.EngineAPIStructs
 	[StructLayout(LayoutKind.Sequential)]
 	class GameEntityDescriptor
 	{
-		public TransformCompoent Transform = new TransformCompoent();
+		public TransformComponent Transform = new TransformComponent();
 	}
 } // Anoymous namespace
 

@@ -23,14 +23,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma comment(lib, "engine.lib")
+#pragma comment(lib, "Engine.lib")
 
 // DLLMain.cpp : Defines the entry point for the DLL application.
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <crtdbg.h>
 
-BOOL APIENTRY DllMain( HMODULE hModule,
+BOOL APIENTRY DLLMain( HMODULE hModule,
 					   DWORD  ul_reason_for_call,
 					   LPVOID lpReserved )
 {

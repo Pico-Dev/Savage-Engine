@@ -127,6 +127,7 @@ namespace Pico_Editor.GameProject
 					$"Add {x.Name} to {Name}")); // Name of the action
 			});
 
+			// Define remove entity
 			RemoveGameEntityCommand = new RelayCommand<GameEntity>(x =>
 			{
 				var entityIndex = _gameEntities.IndexOf(x); // Get the entity index

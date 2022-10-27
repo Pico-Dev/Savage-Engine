@@ -4,12 +4,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pico-Editor", "Pico-Editor\Pico-Editor.csproj", "{D9256739-6711-4DBF-B730-7F6C67FA3A18}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A} = {E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}
+		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA} = {FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineTest", "EngineTest\EngineTest.vcxproj", "{DEA1E164-168C-46F1-B150-F8EF86D1156E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A} = {E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}
+		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA} = {FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineDLL", "EngineDLL\EngineDLL.vcxproj", "{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA} = {FC1A8C38-E67B-40D6-AD3C-1D08F0AD5EEA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

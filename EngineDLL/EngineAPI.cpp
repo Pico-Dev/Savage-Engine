@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// Keep declorations consistand and avoid name mangling by the compiler
+// Keep declorations consistant and and avoid name mangling by the compiler
 #ifndef  EDITOR_INTERFACE
 #define EDITOR_INTERFACE extern "C" __declspec(dllexport)
 #endif // ! EDITOR_INTERFACE
