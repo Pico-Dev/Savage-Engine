@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineTest", "EngineTest\EngineTest.vcxproj", "{DEA1E164-168C-46F1-B150-F8EF86D1156E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineDLL", "EngineDLL\EngineDLL.vcxproj", "{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Release|x64.Build.0 = Release|x64
 		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Release|x86.ActiveCfg = Release|Win32
 		{DEA1E164-168C-46F1-B150-F8EF86D1156E}.Release|x86.Build.0 = Release|Win32
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}.Debug|x64.ActiveCfg = Debug|x64
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}.Debug|x64.Build.0 = Debug|x64
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}.Debug|x86.ActiveCfg = Debug|Win32
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}.Debug|x86.Build.0 = Debug|Win32
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}.Release|x64.ActiveCfg = Release|x64
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}.Release|x64.Build.0 = Release|x64
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}.Release|x86.ActiveCfg = Release|Win32
+		{E60CAE29-1D6C-4C5D-8079-AE5DCC78851A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

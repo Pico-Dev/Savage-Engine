@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Pico-Editor": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

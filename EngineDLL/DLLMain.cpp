@@ -1,4 +1,4 @@
-﻿/*
+/*
 	MIT License
 
 Copyright (c) 2022        Daniel McLarty
@@ -23,33 +23,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+#pragma comment(lib, "engine.lib")
 
-namespace Pico_Editor.Utilities
+// DLLMain.cpp : Defines the entry point for the DLL application.
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <crtdbg.h>
+
+BOOL APIENTRY DllMain( HMODULE hModule,
+					   DWORD  ul_reason_for_call,
+					   LPVOID lpReserved )
 {
-	static public class ID
+	switch (ul_reason_for_call)
 	{
-		public static int INVALID_ID => -1;
-		public static bool IsValid(int id) => id != INVALID_ID;
+	case DLL_PROCESS_ATTACH:
+#if _DEBUG
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF); // Look for memory leaks and set a flag
+#endif
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
 	}
-
-	static public class MathUtil
-	{
-		public static float Epsilon => 0.00001f;
-
-		// Allow for close enough becasue floats are evil
-		public static bool IsTheSameAs(this float value, float other)
-		{
-			return Math.Abs(value - other) < Epsilon;
-		}
-
-		// Allow for close enough with nullable values becasue floats are evil
-		public static bool IsTheSameAs(this float? value, float? other)
-		{
-			if (!value.HasValue || !other.HasValue) return false;
-			return Math.Abs(value.Value - other.Value) < Epsilon;
-		}
-	}
+	return TRUE;
 }
+

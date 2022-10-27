@@ -33,7 +33,7 @@ namespace pico::id {
 
 	namespace internal {
 		// Set number of entity bits reseved for entity generations. (Number of times an entity can safely change at that index.)
-		constexpr u32 generation_bits{ 8 };
+		constexpr u32 generation_bits{ 10 };
 		// Set number of entity bits reseved for entity index. (Max number of entities loaded at one time.)
 		constexpr u32 index_bits{ sizeof(id_type) * 8 - generation_bits };
 		// Mask to get only generations bits from ID

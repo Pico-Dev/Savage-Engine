@@ -37,6 +37,7 @@ using System.Windows.Input;
 using Pico_Editor.Utilities;
 using System.ComponentModel;
 using System.Windows.Documents;
+using Pico_Editor.DLLWrappers;
 
 namespace Pico_Editor.Components
 {
@@ -44,6 +45,43 @@ namespace Pico_Editor.Components
 	[KnownType(typeof(Transform))]
 	class GameEntity : ViewModelBase
 	{
+		private int _entityID = ID.INVALID_ID;
+		public int EntityID
+		{
+			get => _entityID;
+			set
+			{
+				if (_entityID != value)
+				{
+					_entityID = value;
+					OnPropertyChanged(nameof(_entityID));
+				}
+			}
+		}
+
+		private bool _isActive;
+		public bool IsActive
+		{
+			get => _isActive;
+			set
+			{
+				if (_isActive != value)
+				{
+					_isActive = value;
+					if(_isActive) // Should be loaded
+					{
+						EntityID = EngineAPI.CreateGameEntity(this);
+						Debug.Assert(ID.IsValid(_entityID));
+					}
+					else // Should be removed
+					{
+						EngineAPI.RemoveGameEntity(this);
+					}
+					OnPropertyChanged(nameof(IsActive));
+				}
+			}
+		}
+
 		private bool _isEnbaled = true;
 		[DataMember]
 		public bool IsEnbaled
@@ -79,6 +117,9 @@ namespace Pico_Editor.Components
 		[DataMember(Name = nameof(Components))]
 		private readonly ObservableCollection<Component> _components = new ObservableCollection<Component>();
 		public ReadOnlyObservableCollection<Component> Components { get; private set; }
+
+		public Component GetComponent(Type type) => Components.FirstOrDefault(c => c.GetType() == type);
+		public T GetComponent<T>() where T : Component => GetComponent(typeof(T)) as T;
 
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext contex)

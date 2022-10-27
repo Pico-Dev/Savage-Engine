@@ -78,17 +78,27 @@ namespace Pico_Editor.GameProject
 		public ICommand AddGameEntityCommand { get; set; }
 		public ICommand RemoveGameEntityCommand { get; set; }
 
-		private void AddGameEntity(GameEntity entity)
+		private void AddGameEntity(GameEntity entity, int index = -1)
 		{
 			Debug.Assert(!_gameEntities.Contains(entity)); // Cant be a duplicate
-			_gameEntities.Add(entity);
+			entity.IsActive = IsActive; // Set the entity to active when the scene is
+			if(index == -1) // Add to list if index is invalid
+			{
+				_gameEntities.Add(entity);
+			}
+			else // Insert if the index is valid
+			{
+				_gameEntities.Insert(index, entity);
+			}
 		}
 
 		private void RemoveGameEntity(GameEntity entity)
 		{
 			Debug.Assert(_gameEntities.Contains(entity)); // Must exist
+			entity.IsActive = false; // Disable the entity
 			_gameEntities.Remove(entity);
 		}
+
 
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
@@ -99,6 +109,12 @@ namespace Pico_Editor.GameProject
 				OnPropertyChanged(nameof(GameEntity)); // Updates bindings
 			}
 
+			// Set status on load for all entites
+			foreach (var entity in _gameEntities)
+			{
+				entity.IsActive = IsActive;
+			}
+
 			//Define add entity
 			AddGameEntityCommand = new RelayCommand<GameEntity>(x =>
 			{
@@ -107,7 +123,7 @@ namespace Pico_Editor.GameProject
 
 				Project.UndoRedo.Add(new UndoRedoAction(
 					() => RemoveGameEntity(x), // Remove the entity
-					() => _gameEntities.Insert(entityIndex, x), // Readd the entity at the same index
+					() => AddGameEntity(x, entityIndex), // Readd the entity at the same index
 					$"Add {x.Name} to {Name}")); // Name of the action
 			});
 
@@ -117,7 +133,7 @@ namespace Pico_Editor.GameProject
 				RemoveGameEntity(x); // Remove the entity
 
 				Project.UndoRedo.Add(new UndoRedoAction(
-					() => _gameEntities.Insert(entityIndex, x), // Readd the entity at the same index
+					() => AddGameEntity(x, entityIndex), // Readd the entity at the same index
 					() => RemoveGameEntity(x), // Remove the entity again,
 					$"Remove {x.Name}")); // Name of the action
 			}); // Look if entity is active
