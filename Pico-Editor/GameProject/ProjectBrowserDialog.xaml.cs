@@ -33,6 +33,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -40,6 +41,8 @@ namespace Pico_Editor.GameProject
 {
 	public partial class ProjectBrowserDialog : Window
 	{
+		// Define easing functionm
+		private readonly CubicEase _easing = new CubicEase() { EasingMode = EasingMode.EaseInOut };
 		public ProjectBrowserDialog()
 		{
 			InitializeComponent();
@@ -57,6 +60,34 @@ namespace Pico_Editor.GameProject
 			}
 		}
 
+		// Define animation to paly when selecting create project
+		private void AnimateToNewProject()
+		{
+			var highlightAnimation = new DoubleAnimation(200, 400, new Duration(TimeSpan.FromSeconds(0.2)));
+			highlightAnimation.EasingFunction = _easing;
+			highlightAnimation.Completed += (s, e) =>
+			{
+				var animation = new ThicknessAnimation(new Thickness(0), new Thickness(-1600, 0, 0, 0), new Duration(TimeSpan.FromSeconds(0.5)));
+				animation.EasingFunction = _easing;
+				browserContent.BeginAnimation(MarginProperty, animation);
+			};
+			highlightRect.BeginAnimation(Canvas.LeftProperty, highlightAnimation);
+		}
+
+		// Define animation to paly when selecting open project
+		private void AnimateToOpenProject()
+		{
+			var highlightAnimation = new DoubleAnimation(400, 200, new Duration(TimeSpan.FromSeconds(0.2)));
+			highlightAnimation.EasingFunction = _easing;
+			highlightAnimation.Completed += (s, e) =>
+			{
+				var animation = new ThicknessAnimation(new Thickness(-1600, 0, 0, 0), new Thickness(0), new Duration(TimeSpan.FromSeconds(0.5)));
+				animation.EasingFunction = _easing;
+				browserContent.BeginAnimation(MarginProperty, animation);
+			};
+			highlightRect.BeginAnimation(Canvas.LeftProperty, highlightAnimation);
+		}
+
 		private void OnToggleButton_Click(object sendor, RoutedEventArgs e)
 		{
 			if (sendor == openProjectButton) // Check if sendor is open project
@@ -64,7 +95,9 @@ namespace Pico_Editor.GameProject
 				if(createProjectButton.IsChecked == true) // Check if on create porject
 				{
 					createProjectButton.IsChecked = false;
-					browserContent.Margin = new Thickness(0); //Change the margin
+					AnimateToOpenProject();
+					openProjectView.IsEnabled = true;
+					newProjectView.IsEnabled = false;
 				}
 				openProjectButton.IsChecked = true; // do nothing
 			}
@@ -73,7 +106,9 @@ namespace Pico_Editor.GameProject
 				if (openProjectButton.IsChecked == true) // Check if on open porject
 				{
 					openProjectButton.IsChecked = false;
-					browserContent.Margin = new Thickness(-800,0,0,0); //Change the margin
+					AnimateToNewProject();
+					newProjectView.IsEnabled = true;
+					openProjectView.IsEnabled = false;
 				}
 				createProjectButton.IsChecked = true; // do nothing
 			}

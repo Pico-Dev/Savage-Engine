@@ -61,5 +61,23 @@ namespace Pico_Editor.Dictionaries
 				Keyboard.ClearFocus();
 			}
 		}
+
+		private void OnClose_Button_Click(object sender, RoutedEventArgs e)
+		{
+			var window = (Window)((FrameworkElement)sender).TemplatedParent;
+			window.Close();
+		}
+
+		private void OnMazimizeRestore_Button_Click(object sender, RoutedEventArgs e)
+		{
+			var window = (Window)((FrameworkElement)sender).TemplatedParent;
+			window.WindowState = (window.WindowState == WindowState.Normal) ? WindowState.Maximized : WindowState.Normal;
+		}
+
+		private void OnMinimize_Button_Click(object sender, RoutedEventArgs e)
+		{
+			var window = (Window)((FrameworkElement)sender).TemplatedParent;
+			window.WindowState = WindowState.Minimized;
+		}
 	}
 }

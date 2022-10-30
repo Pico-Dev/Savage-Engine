@@ -32,7 +32,8 @@ SOFTWARE.
 		xmlns:editors="clr-namespace:Pico_Editor.Editors" 
         mc:Ignorable="d"
 		WindowStartupLocation="CenterScreen"
-        Title="Pico Editor" Height="1080" Width="1920">
+        Title="Pico Editor" Height="1080" Width="1920"
+	    Style="{StaticResource PicoWindowStyle}">
     <Grid>
 		<editors:WorldEditorView/>
 	</Grid>
