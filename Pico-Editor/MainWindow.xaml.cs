@@ -68,7 +68,7 @@ namespace Pico_Editor
 		private void OpenProjectBrowserDialog()
 		{
 			var projectBrowser = new ProjectBrowserDialog(); // Create instance of project browser
-			if (projectBrowser.ShowDialog() == false || projectBrowser.DataContext == null) // Test if user closes dialog window or trhe project is null
+			if (projectBrowser.ShowDialog() == false || projectBrowser.DataContext == null) // Test if user closes dialog window or the project is null
 			{
 				Application.Current.Shutdown(); // Terminate the app
 			}

@@ -45,7 +45,8 @@ SOFTWARE.
 						<DataTemplate>
 							<StackPanel Orientation="Horizontal">
 								<Image Source="{Binding Icon}" Margin="0,0,5,0"/>
-								<TextBlock Text="{Binding ProjectType}"/>
+								<TextBlock Text="{Binding ProjectType}" FontSize="18" FontFamily="Bahnschrift condensed"
+										   VerticalAlignment="Center"/>
 							</StackPanel>
 						</DataTemplate>
 					</ListBox.ItemTemplate>

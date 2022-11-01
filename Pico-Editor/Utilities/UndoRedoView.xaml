@@ -40,7 +40,7 @@ SOFTWARE.
 			</ItemsControl.ItemsPanel>
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<TextBlock Text="{Binding Name}"/>
+					<TextBlock Text="{Binding Name}" Foreground="{StaticResource Editor.FontBrush}"/>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
@@ -52,7 +52,7 @@ SOFTWARE.
 			</ItemsControl.ItemsPanel>
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<TextBlock Text="{Binding Name}" Foreground="Gray"/>
+					<TextBlock Text="{Binding Name}" Foreground="{StaticResource Editor.Disabled.FontBrush}"/>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
