@@ -1,4 +1,4 @@
-/*
+﻿/*
 	MIT License
 
 Copyright (c) 2022        Daniel McLarty
@@ -23,26 +23,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
-#include "CommonHeaders.h"
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Input;
 
-namespace savage::math {
-	constexpr float pi = 3.1415926535897932384626433832795f;
-	constexpr float epsilon = 1e-5f;
-#if defined(_WIN64)
-	using v2 = DirectX::XMFLOAT2;
-	using v2a = DirectX::XMFLOAT2A;
-	using v3 = DirectX::XMFLOAT3;
-	using v3a = DirectX::XMFLOAT3A;
-	using v4 = DirectX::XMFLOAT4;
-	using u32v2 = DirectX::XMUINT2;
-	using u32v3 = DirectX::XMUINT3;
-	using u32v4 = DirectX::XMUINT4;
-	using s32v2 = DirectX::XMINT2;
-	using s32v3 = DirectX::XMINT3;
-	using s32v4 = DirectX::XMINT4;
-	using m3x3 = DirectX::XMFLOAT3X3; // NOTE: DirectXMath does not have aligned 3x3 matricies
-	using m4x4 = DirectX::XMFLOAT4X4;
-	using m4x4a = DirectX::XMFLOAT4X4A;
-#endif
+namespace Savage_Editor
+{
+	class RelayCommand<T> : ICommand
+	{
+		private readonly Action<T> _execute; // What needs to be done
+		private readonly Predicate<T> _canExecute; // What can be done
+
+		public event EventHandler CanExecuteChanged
+		{
+			add { CommandManager.RequerySuggested += value; }
+			remove { CommandManager.RequerySuggested -= value; }
+		}
+
+		public bool CanExecute(object parameter)
+		{
+			return _canExecute?.Invoke((T)parameter) ?? true; // If not null return the vale if null return true
+		}
+
+		public void Execute(object parameter)
+		{
+			_execute((T)parameter); // Return the value
+		}
+
+		public RelayCommand(Action<T> execute, Predicate<T> canExecute = null)
+		{
+			_execute = execute ?? throw new ArgumentNullException(nameof(execute)); // If execute is null throw an exception
+			_canExecute = canExecute; // This can be null
+
+		}
+	}
 }

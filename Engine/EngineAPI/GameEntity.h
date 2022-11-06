@@ -28,7 +28,7 @@ SOFTWARE.
 #include "..\Components\ComponentsCommon.h"
 #include "TransformComponent.h"
 
-namespace pico::game_entity {
+namespace savage::game_entity {
 
 	DEFINE_TYPED_ID(entity_id);
 

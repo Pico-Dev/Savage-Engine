@@ -1,4 +1,4 @@
-/*
+﻿<!--
 	MIT License
 
 Copyright (c) 2022        Daniel McLarty
@@ -21,28 +21,20 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-
-#pragma once
-#include "CommonHeaders.h"
-
-namespace savage::math {
-	constexpr float pi = 3.1415926535897932384626433832795f;
-	constexpr float epsilon = 1e-5f;
-#if defined(_WIN64)
-	using v2 = DirectX::XMFLOAT2;
-	using v2a = DirectX::XMFLOAT2A;
-	using v3 = DirectX::XMFLOAT3;
-	using v3a = DirectX::XMFLOAT3A;
-	using v4 = DirectX::XMFLOAT4;
-	using u32v2 = DirectX::XMUINT2;
-	using u32v3 = DirectX::XMUINT3;
-	using u32v4 = DirectX::XMUINT4;
-	using s32v2 = DirectX::XMINT2;
-	using s32v3 = DirectX::XMINT3;
-	using s32v4 = DirectX::XMINT4;
-	using m3x3 = DirectX::XMFLOAT3X3; // NOTE: DirectXMath does not have aligned 3x3 matricies
-	using m4x4 = DirectX::XMFLOAT4X4;
-	using m4x4a = DirectX::XMFLOAT4X4A;
-#endif
-}
+-->
+	
+<Window x:Class="Savage_Editor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Savage_Editor"
+		xmlns:editors="clr-namespace:Savage_Editor.Editors" 
+        mc:Ignorable="d"
+		WindowStartupLocation="CenterScreen"
+        Title="Savage Editor" Height="1080" Width="1920"
+	    Style="{StaticResource SavageWindowStyle}">
+    <Grid>
+		<editors:WorldEditorView/>
+	</Grid>
+</Window>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Savage-Editor": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

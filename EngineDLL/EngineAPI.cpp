@@ -33,7 +33,7 @@ SOFTWARE.
 #include "..\Engine\Components\Entity.h"
 #include "..\Engine\Components\Transform.h"
 
-using namespace pico;
+using namespace savage;
 
 namespace {
 

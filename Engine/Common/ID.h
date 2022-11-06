@@ -26,7 +26,7 @@ SOFTWARE.
 #pragma once
 #include "CommonHeaders.h"
 
-namespace pico::id {
+namespace savage::id {
 
 	// Set number of bits for entity IDs
 	using id_type = u32;

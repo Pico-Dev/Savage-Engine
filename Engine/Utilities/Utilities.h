@@ -31,7 +31,7 @@ SOFTWARE.
 
 #if USE_STL_VECTOR
 #include <vector>
-namespace pico::utl {
+namespace savage::utl {
 	template<typename T>
 	using vector = std::vector<T>;
 }
@@ -39,13 +39,13 @@ namespace pico::utl {
 
 #if USE_STL_DEQUE
 #include <deque>
-namespace pico::utl {
+namespace savage::utl {
 	template<typename T>
 	using deque = std::deque<T>;
 }
 #endif
 
-namespace pcio::util {
+namespace savage::util {
 
 	// TODO: make custom version of STL functions
 

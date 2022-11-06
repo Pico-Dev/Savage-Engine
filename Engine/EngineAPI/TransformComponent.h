@@ -26,7 +26,7 @@ SOFTWARE.
 #pragma once
 #include "..\Components\ComponentsCommon.h"
 
-namespace pico::transform {
+namespace savage::transform {
 
 	// Define typed ID for transform component
 	DEFINE_TYPED_ID(transform_id);

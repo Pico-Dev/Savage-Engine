@@ -26,7 +26,7 @@ SOFTWARE.
 #pragma once
 #include "ComponentsCommon.h"
 
-namespace pico {
+namespace savage {
 	
 // macro to define initilization information for compoents
 #define INIT_INFO(component) namespace component { struct init_info; }

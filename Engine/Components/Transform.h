@@ -27,7 +27,7 @@ SOFTWARE.
 #include "ComponentsCommon.h"
 
 
-namespace pico::transform {
+namespace savage::transform {
 
 	// Contains initilization information for transform component
 	struct init_info

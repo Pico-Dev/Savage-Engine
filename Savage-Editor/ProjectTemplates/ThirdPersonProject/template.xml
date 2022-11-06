@@ -1,0 +1,10 @@
+<ProjectTemplate xmlns="http://schemas.datacontract.org/2004/07/Savage_Editor.GameProject" 
+				 xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Folders xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+		<a:string>.Savage</a:string>
+		<a:string>Content</a:string>
+		<a:string>GameCode</a:string>
+	</Folders>
+	<ProjectFile>project.savage</ProjectFile>
+	<ProjectType>3rd Person Project</ProjectType>
+</ProjectTemplate>

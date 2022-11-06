@@ -26,7 +26,7 @@ SOFTWARE.
 #include "Entity.h"
 #include "Transform.h"
 
-namespace pico::game_entity {
+namespace savage::game_entity {
 
 	namespace {
 

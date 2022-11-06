@@ -32,7 +32,7 @@ SOFTWARE.
 #include <iostream>
 #include <ctime>
 
-using namespace pico;
+using namespace savage;
 
 class engine_test : public test
 {
