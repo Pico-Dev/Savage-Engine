@@ -1,5 +1,5 @@
 # Savage-Engine
-A simple roalty free game engine made in C++
+A simple roalty free game engine made in C++ With the goal of being an open source competitor to the Geo-Mod engine
 
 
 ```
