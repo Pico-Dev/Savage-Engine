@@ -24,7 +24,7 @@ SOFTWARE.
 */
 
 
-// General codebase wide undo redo system
+// General code-base wide undo redo system
 
 using System;
 using System.Collections.Generic;
@@ -68,7 +68,7 @@ namespace Savage_Editor.Utilities
 			_redoAction = redo;
 		}
 
-		// Diffrent undo redo constructor
+		// Different undo redo constructor
 		public UndoRedoAction(string property, object instance, object undoValue, object redoValue, string name) :
 			this(
 				() => instance.GetType().GetProperty(property).SetValue(instance, undoValue),

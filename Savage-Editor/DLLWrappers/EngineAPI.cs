@@ -47,7 +47,7 @@ namespace Savage_Editor.EngineAPIStructs
 	{
 		public TransformComponent Transform = new TransformComponent();
 	}
-} // Anoymous namespace
+} // Anonymous namespace
 
 namespace Savage_Editor.DLLWrappers
 {

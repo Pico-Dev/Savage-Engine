@@ -68,7 +68,7 @@ namespace Savage_Editor.GameProject
 				{
 					_projectName = value;
 					ValidateProjectPath();
-					OnPropertyChanged(nameof(ProjectName)); // Treigger Change
+					OnPropertyChanged(nameof(ProjectName)); // Trigger Change
 				}
 			}
 		}
@@ -105,7 +105,7 @@ namespace Savage_Editor.GameProject
 			}
 		}
 
-		// Error mesage string
+		// Error message string
 		private string _errorMsg;
 		public string ErrorMsg
 		{
@@ -127,8 +127,8 @@ namespace Savage_Editor.GameProject
 		private bool ValidateProjectPath()
 		{
 			var path = ProjectPath;
-			if (!Path.EndsInDirectorySeparator(path)) path += @"\"; // Look for separator and appand it if not there
-			path += $@"{ProjectName}\"; // Make sepeate folder for the project
+			if (!Path.EndsInDirectorySeparator(path)) path += @"\"; // Look for separator and append it if not there
+			path += $@"{ProjectName}\"; // Make separate folder for the project
 
 			IsValid = false;
 			if (string.IsNullOrWhiteSpace(ProjectName.Trim())) // Look if there is no name
@@ -168,13 +168,13 @@ namespace Savage_Editor.GameProject
 				return string.Empty;
 			}
 
-			if (!Path.EndsInDirectorySeparator(ProjectPath)) ProjectPath += @"\"; // Look for separator and appand it if not there
-			var path = $@"{ProjectPath}{ProjectName}\"; // Make sepeate folder for the project
+			if (!Path.EndsInDirectorySeparator(ProjectPath)) ProjectPath += @"\"; // Look for separator and append it if not there
+			var path = $@"{ProjectPath}{ProjectName}\"; // Make separate folder for the project
 
 			try
 			{
 				if(!Directory.Exists(path)) Directory.CreateDirectory(path); // Create path if it does not exist
-				// Create all needed sub-direcories
+				// Create all needed sub-directories
 				foreach (var folder in template.Folders)
 				{
 					Directory.CreateDirectory(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path), folder)));
@@ -182,7 +182,7 @@ namespace Savage_Editor.GameProject
 				// Set the .Savage folder to hidden
 				var dirInfo = new DirectoryInfo(path + @".Savage");
 				dirInfo.Attributes |= FileAttributes.Hidden;
-				// Coppy respective PNG files to new project form the template
+				// Copy respective PNG files to new project form the template
 				File.Copy(template.IconFilePath, Path.GetFullPath(Path.Combine(dirInfo.FullName, "Icon.png")));
 				File.Copy(template.ScreenshotFilePath, Path.GetFullPath(Path.Combine(dirInfo.FullName, "Screenshot.png")));
 
@@ -208,13 +208,13 @@ namespace Savage_Editor.GameProject
 			{
 				var templateFiles = Directory.GetFiles(_templatePath, "template.xml", SearchOption.AllDirectories); //Find all template.xml files for the templates
 				Debug.Assert(templateFiles.Any());
-				foreach (var file in templateFiles) // Loop thourgh all templates
+				foreach (var file in templateFiles) // Loop through all templates
 				{
-					var template = Serializer.FromFile<ProjectTemplate>(file); // Deserialize the xml files 
+					var template = Serializer.FromFile<ProjectTemplate>(file); // De-serialize the XML files 
 					template.IconFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), "Icon.png")); // Get the template icon
 					template.Icon = File.ReadAllBytes(template.IconFilePath); // Read the icon data form the file
-					template.ScreenshotFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), "Screenshot.png")); // Get the template screenshot
-					template.Screenshot = File.ReadAllBytes(template.ScreenshotFilePath); // Read the screenshot data from the file
+					template.ScreenshotFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), "Screenshot.png")); // Get the template screen-shot
+					template.Screenshot = File.ReadAllBytes(template.ScreenshotFilePath); // Read the screen-shot data from the file
 					template.ProjectFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), template.ProjectFile)); // Get the project file path
 					_projectTemplates.Add(template);
 				}

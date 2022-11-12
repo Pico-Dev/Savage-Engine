@@ -53,7 +53,7 @@ namespace Savage_Editor.Utilities
 		public int Line { get; }
 		public string MetaData => $"{File}: {Caller} ({Line})";
 
-		// Degine a log message
+		// Design a log message
 		public LogMessage(MessageType type, string msg, string file, string caller, int line)
 		{
 			Time = DateTime.Now;
@@ -103,10 +103,10 @@ namespace Savage_Editor.Utilities
 
 		static Logger()
 		{
-			// Called every time the filter refeshes
+			// Called every time the filter refreshes
 			FilterdMessages.Filter += (s, e) =>
 			{
-				// Get type of item to see if it should be in the filterd list
+				// Get type of item to see if it should be in the filtered list
 				var type = (int)(e.Item as LogMessage).MessageType;
 				e.Accepted = (type & _messageFileter) != 0;
 			};

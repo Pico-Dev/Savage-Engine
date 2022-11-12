@@ -28,9 +28,16 @@ SOFTWARE.
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:vm="clr-namespace:Savage_Editor.Components"
              xmlns:local="clr-namespace:Savage_Editor.Editors"
 			 mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+	<UserControl.Resources>
+		<DataTemplate DataType="{x:Type vm:MSTransform}">
+			<local:TransformView/>
+		</DataTemplate>
+	</UserControl.Resources>
+	
 	<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 		<ScrollViewer.Style>
 			<Style TargetType="ScrollViewer">

@@ -25,7 +25,7 @@ SOFTWARE.
 
 #pragma once
 
-#pragma warning(disable: 4530) // Disable exeption warning
+#pragma warning(disable: 4530) // Disable exception warning
 
 // C/C++
 #include <stdint.h>

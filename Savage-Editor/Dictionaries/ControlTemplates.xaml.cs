@@ -37,7 +37,7 @@ namespace Savage_Editor.Dictionaries
 		// Define key down event for text boxes
 		private void OnTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-			var textBox = sender as TextBox; // Get textbox refrence
+			var textBox = sender as TextBox; // Get text box reference
 			var exp = textBox.GetBindingExpression(TextBox.TextProperty);
 			if (exp == null) return; // Cant do anything
 
@@ -66,7 +66,7 @@ namespace Savage_Editor.Dictionaries
 		// Define key down event for text boxes with rename
 		private void OnTextBoxRename_KeyDown(object sender, KeyEventArgs e)
 		{
-			var textBox = sender as TextBox; // Get textbox refrence
+			var textBox = sender as TextBox; // Get text box reference
 			var exp = textBox.GetBindingExpression(TextBox.TextProperty);
 			if (exp == null) return; // Cant do anything
 
@@ -95,12 +95,12 @@ namespace Savage_Editor.Dictionaries
 		// Define lost focus event for text boxes with rename
 		private void OnTextBoxRename_LostFocus(object sender, RoutedEventArgs e)
 		{
-			var textBox = sender as TextBox; // Get textbox refrence
+			var textBox = sender as TextBox; // Get text box reference
+			if (!textBox.IsVisible) return;
 			var exp = textBox.GetBindingExpression(TextBox.TextProperty);
 			if (exp != null) // Cant be null
 			{
 				exp.UpdateTarget(); // go back to old value
-				textBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Previous)); // Change focus to the last thing that was being focused
 				textBox.Visibility = Visibility.Collapsed; // Hide after losing focus
 			}
 		}
@@ -119,7 +119,7 @@ namespace Savage_Editor.Dictionaries
 			window.WindowState = (window.WindowState == WindowState.Normal) ? WindowState.Maximized : WindowState.Normal;
 		}
 
-		// Define click event for minimise buttons
+		// Define click event for minimize buttons
 		private void OnMinimize_Button_Click(object sender, RoutedEventArgs e)
 		{
 			var window = (Window)((FrameworkElement)sender).TemplatedParent;

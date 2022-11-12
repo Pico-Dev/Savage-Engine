@@ -41,7 +41,7 @@ namespace Savage_Editor.GameProject
 {
 	public partial class ProjectBrowserDialog : Window
 	{
-		// Define easing functionm
+		// Define easing function
 		private readonly CubicEase _easing = new CubicEase() { EasingMode = EasingMode.EaseInOut };
 		public ProjectBrowserDialog()
 		{
@@ -60,7 +60,7 @@ namespace Savage_Editor.GameProject
 			}
 		}
 
-		// Define animation to paly when selecting create project
+		// Define animation to play when selecting create project
 		private void AnimateToNewProject()
 		{
 			var highlightAnimation = new DoubleAnimation(200, 400, new Duration(TimeSpan.FromSeconds(0.2)));
@@ -74,7 +74,7 @@ namespace Savage_Editor.GameProject
 			highlightRect.BeginAnimation(Canvas.LeftProperty, highlightAnimation);
 		}
 
-		// Define animation to paly when selecting open project
+		// Define animation to play when selecting open project
 		private void AnimateToOpenProject()
 		{
 			var highlightAnimation = new DoubleAnimation(400, 200, new Duration(TimeSpan.FromSeconds(0.2)));
@@ -90,9 +90,9 @@ namespace Savage_Editor.GameProject
 
 		private void OnToggleButton_Click(object sendor, RoutedEventArgs e)
 		{
-			if (sendor == openProjectButton) // Check if sendor is open project
+			if (sendor == openProjectButton) // Check if sender is open project
 			{
-				if(createProjectButton.IsChecked == true) // Check if on create porject
+				if(createProjectButton.IsChecked == true) // Check if on create project
 				{
 					createProjectButton.IsChecked = false;
 					AnimateToOpenProject();
@@ -103,7 +103,7 @@ namespace Savage_Editor.GameProject
 			}
 			else // Sender should be create project
 			{
-				if (openProjectButton.IsChecked == true) // Check if on open porject
+				if (openProjectButton.IsChecked == true) // Check if on open project
 				{
 					openProjectButton.IsChecked = false;
 					AnimateToNewProject();

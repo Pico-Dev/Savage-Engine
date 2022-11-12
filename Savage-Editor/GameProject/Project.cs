@@ -120,11 +120,11 @@ namespace Savage_Editor.GameProject
 			{
 				AddScene($"New Scene {_scenes.Count}"); // Make the scene
 				var newScene = _scenes.Last(); // Remember the last scene
-				var sceneIndex = _scenes.Count - 1; // Remember the inde of last scene
+				var sceneIndex = _scenes.Count - 1; // Remember the index of last scene
 
 				UndoRedo.Add(new UndoRedoAction(
 					() => RemoveScene(newScene), // Remove the scene
-					() => _scenes.Insert(sceneIndex, newScene), // Readd the scene at the same index
+					() => _scenes.Insert(sceneIndex, newScene), // Re-add the scene at the same index
 					$"Add {newScene.Name}")); // Name of the action
 			});
 
@@ -134,7 +134,7 @@ namespace Savage_Editor.GameProject
 				RemoveScene(x); // Remove the scene
 
 				UndoRedo.Add(new UndoRedoAction(
-					() => _scenes.Insert(sceneIndex, x), // Readd the scene at the same index
+					() => _scenes.Insert(sceneIndex, x), // Re-add the scene at the same index
 					() => RemoveScene(x), // Remove the scene again,
 					$"Remove {x.Name}")); // Name of the action
 			}, x => !x.IsActive); // Look if scene is active

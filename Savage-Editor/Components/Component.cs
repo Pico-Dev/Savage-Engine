@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -38,19 +39,43 @@ namespace Savage_Editor.Components
 	[DataContract]
 	abstract class Component : ViewModelBase
 	{
-
+		public abstract IMSComponent GetMultiselectionComponent(MSEntity msEntity);
 		[DataMember]
 		public GameEntity Owner { get; private set; }
 
 		public Component(GameEntity owner)
 		{
 			Debug.Assert(owner != null); // Can't be null
-			Owner = owner; // Internal refrence
+			Owner = owner; // Internal reference
 		}
 	}
 
+	// Define how multi-selection works in the editor for components
 	abstract class MSComponent<T> : ViewModelBase, IMSComponent where T : Component
 	{
+		// Check if we can update a component
+		private bool _enableUpdates = true;
+		// List of components that corresponds to the type of component from multi-selection component
+		public List<T> SelectedComponents { get; }
 
+		// Update the components
+		protected abstract bool UpdateComponents(string propertyName);
+		// Get the info from the components
+		protected abstract bool UpdateMSComponents();
+
+		// Control update refreshing
+		public void Refresh()
+		{
+			_enableUpdates = false;
+			UpdateMSComponents();
+			_enableUpdates = true;
+		}
+
+		public MSComponent(MSEntity msEntity)
+		{
+			Debug.Assert(msEntity?.SelectedEntities?.Any() == true); // Look for selected entities
+			SelectedComponents = msEntity.SelectedEntities.Select(entity => entity.GetComponent<T>()).ToList(); // Get component of type T into the list
+			PropertyChanged += (s, e) => { if (_enableUpdates) UpdateComponents(e.PropertyName); }; // When one property changes then that property in all selected entities change
+		}
 	}
 }

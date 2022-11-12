@@ -48,7 +48,7 @@ namespace Savage_Editor.GameProject
 		{
 			InitializeComponent();
 
-			// Set the first item as the selected item if one existis
+			// Set the first item as the selected item if one exists
 			Loaded += (s, e) =>
 			{
 				var item = projectsListBox.ItemContainerGenerator

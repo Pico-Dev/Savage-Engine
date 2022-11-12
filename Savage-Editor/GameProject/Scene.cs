@@ -48,7 +48,7 @@ namespace Savage_Editor.GameProject
 				if (_name != value)
 				{
 					_name = value;
-					OnPropertyChanged(nameof(Name)); // Treigger Change
+					OnPropertyChanged(nameof(Name)); // Trigger Change
 				}
 			}
 		}
@@ -109,7 +109,7 @@ namespace Savage_Editor.GameProject
 				OnPropertyChanged(nameof(GameEntity)); // Updates bindings
 			}
 
-			// Set status on load for all entites
+			// Set status on load for all entities
 			foreach (var entity in _gameEntities)
 			{
 				entity.IsActive = IsActive;
@@ -123,7 +123,7 @@ namespace Savage_Editor.GameProject
 
 				Project.UndoRedo.Add(new UndoRedoAction(
 					() => RemoveGameEntity(x), // Remove the entity
-					() => AddGameEntity(x, entityIndex), // Readd the entity at the same index
+					() => AddGameEntity(x, entityIndex), // Re-add the entity at the same index
 					$"Add {x.Name} to {Name}")); // Name of the action
 			});
 
@@ -134,7 +134,7 @@ namespace Savage_Editor.GameProject
 				RemoveGameEntity(x); // Remove the entity
 
 				Project.UndoRedo.Add(new UndoRedoAction(
-					() => AddGameEntity(x, entityIndex), // Readd the entity at the same index
+					() => AddGameEntity(x, entityIndex), // Re-add the entity at the same index
 					() => RemoveGameEntity(x), // Remove the entity again,
 					$"Remove {x.Name}")); // Name of the action
 			}); // Look if entity is active

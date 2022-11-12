@@ -29,7 +29,7 @@ SOFTWARE.
 
 namespace savage::transform {
 
-	// Contains initilization information for transform component
+	// Contains initialization information for transform component
 	struct init_info
 	{
 		f32 position[3]{};

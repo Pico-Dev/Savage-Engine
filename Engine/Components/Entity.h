@@ -28,7 +28,7 @@ SOFTWARE.
 
 namespace savage {
 	
-// macro to define initilization information for compoents
+// macro to define initialization information for components
 #define INIT_INFO(component) namespace component { struct init_info; }
 
 	INIT_INFO(transform);
@@ -36,7 +36,7 @@ namespace savage {
 #undef INIT_INFO
 
 	namespace game_entity {
-		// Initalization information
+		// Initialization information
 		struct entity_info
 		{
 			transform::init_info* transform{ nullptr };

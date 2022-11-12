@@ -42,14 +42,14 @@ namespace savage::transform
 		assert(entity.is_valid()); // Must be valid entity
 		const id::id_type entity_index{ id::index(entity.get_id()) };
 
-		// If compoent we are trying to add is in the length of the aray of entities then we overwrite the open slot
+		// If component we are trying to add is in the length of the array of entities then we overwrite the open slot
 		if (positions.size() > entity_index)
 		{
 			rotations[entity_index] = math::v4(info.rotation);
 			positions[entity_index] = math::v3(info.position);
 			scales[entity_index]	= math::v3(info.scale);
 		}
-		// If it is a new entity in the aray then add it to the end of the aray
+		// If it is a new entity in the array then add it to the end of the array
 		else
 		{
 			assert(positions.size() == entity_index);

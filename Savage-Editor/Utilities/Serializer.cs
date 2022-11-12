@@ -41,7 +41,7 @@ namespace Savage_Editor.Utilities
 			{
 				using var fs = new FileStream(path, FileMode.Create); // Make file
 				var serializer = new DataContractSerializer(typeof(T));
-				serializer.WriteObject(fs, instance); // Write an xml file
+				serializer.WriteObject(fs, instance); // Write an XML file
 			}
 			catch (Exception ex)
 			{
@@ -63,7 +63,7 @@ namespace Savage_Editor.Utilities
 			catch (Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
-				Logger.Log(MessageType.Error, $"Failed to deserialize {path}");
+				Logger.Log(MessageType.Error, $"Failed to de-serialize {path}");
 				throw;
 			}
 		}

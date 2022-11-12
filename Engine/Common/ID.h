@@ -32,22 +32,22 @@ namespace savage::id {
 	using id_type = u32;
 
 	namespace internal {
-		// Set number of entity bits reseved for entity generations. (Number of times an entity can safely change at that index.)
+		// Set number of entity bits reserved for entity generations. (Number of times an entity can safely change at that index.)
 		constexpr u32 generation_bits{ 10 };
-		// Set number of entity bits reseved for entity index. (Max number of entities loaded at one time.)
+		// Set number of entity bits reserved for entity index. (Max number of entities loaded at one time.)
 		constexpr u32 index_bits{ sizeof(id_type) * 8 - generation_bits };
 		// Mask to get only generations bits from ID
 		constexpr id_type generation_mask{ (id_type{1} << generation_bits) - 1 };
-		// Mask to get only idex bits from ID
+		// Mask to get only index bits from ID
 		constexpr id_type index_mask{ (id_type{1} << index_bits) - 1 };
 	} // Internal namespace
 
 	// Invalid ID check mask
 	constexpr id_type invalid_id{ id_type(-1) };
-	// Minimum amout of deleted elements before the the engine will reuse an ID
+	// Minimum amount of deleted elements before the engine will reuse an ID
 	constexpr u32 min_deleted_elements{ 1024 };
 
-	// Find smallest inteter type that can fit the generation bits
+	// Find smallest integer type that can fit the generation bits
 	using generation_type = std::conditional_t<internal::generation_bits <= 16, std::conditional_t<internal::generation_bits <= 8, u8, u16>, u32>;
 	// Generation type should not have less bits than generation bits
 	static_assert(sizeof(generation_type) * 8 >= internal::generation_bits);
@@ -87,7 +87,7 @@ namespace savage::id {
 		return index(id) | (generation << internal::index_bits);
 	}
 
-	// Differentiates between debug biuld and release biuld to force id type
+	// Differentiates between debug build and release build to force id type
 #if _DEBUG
 	namespace internal {
 		struct id_base

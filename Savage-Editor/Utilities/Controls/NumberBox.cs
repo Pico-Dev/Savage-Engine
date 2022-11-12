@@ -53,7 +53,7 @@ namespace Savage_Editor.Utilities.Controls
 			get => (double)GetValue(MultiplierProperty);
 			set => SetValue(MultiplierProperty, value);
 		}
-		// Backing field for depenency property
+		// Backing field for dependency property
 		public static readonly DependencyProperty MultiplierProperty =
 			DependencyProperty.Register(nameof(Multiplier), typeof(double), typeof(NumberBox),
 			new PropertyMetadata(1.0));
@@ -64,7 +64,7 @@ namespace Savage_Editor.Utilities.Controls
 			get => (string)GetValue(ValueProperty);
 			set => SetValue(ValueProperty, value);
 		}
-		// Backing field for depenency property
+		// Backing field for dependency property
 		public static readonly DependencyProperty ValueProperty =
 			DependencyProperty.Register(nameof(Value), typeof(string), typeof(NumberBox),
 			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
@@ -73,8 +73,8 @@ namespace Savage_Editor.Utilities.Controls
 		{
 			base.OnApplyTemplate();
 
-			// Define the text box overrites for the number box
-			if(GetTemplateChild("PART_textBlock") is TextBlock textBlock)
+			// Define the text box overwrites for the number box
+			if (GetTemplateChild("PART_textBlock") is TextBlock textBlock)
 			{
 				textBlock.MouseLeftButtonDown += OnTextBlock_Mouse_LBD;
 				textBlock.MouseLeftButtonUp += OnTextBlock_Mouse_LBU;
@@ -94,21 +94,23 @@ namespace Savage_Editor.Utilities.Controls
 
 			// Get the mouse position when we clicked
 			_mouseXStart = e.GetPosition(this).X;
+
+			Focus();
 		}
 
-		// Defien what to do when the user stops clicking
+		// Define what to do when the user stops clicking
 		private void OnTextBlock_Mouse_LBU(object sender, MouseButtonEventArgs e)
 		{
-			if(_captured) // Only do stuff if the mouse is captured
+			if (_captured) // Only do stuff if the mouse is captured
 			{
-				Mouse.Capture(null); // Derefence the mouse
+				Mouse.Capture(null); // Dereference the mouse
 				_captured = false; // Remove the captured flag
 				e.Handled = true;
 
-				// Use keyboad for value change if we did not drag the value
-				if(!_valueChanged && GetTemplateChild("PART_textBox") is TextBox textBox)
+				// Use keyboard for value change if we did not drag the value
+				if (!_valueChanged && GetTemplateChild("PART_textBox") is TextBox textBox)
 				{
-					// Self explaitory setup boilerplate
+					// Self explanatory setup boilerplate
 					textBox.Visibility = Visibility.Visible;
 					textBox.Focus();
 					textBox.SelectAll();
@@ -119,15 +121,15 @@ namespace Savage_Editor.Utilities.Controls
 		// Define what to do when the mouse moves
 		private void OnTextBlock_Mouse_Move(object sender, MouseEventArgs e)
 		{
-			if(_captured) // Only do stuff if the mouse is captured
+			if (_captured) // Only do stuff if the mouse is captured
 			{
 				var mouseX = e.GetPosition(this).X; // Get current mouse position
 				var d = mouseX - _mouseXStart; // Get the total distance moved
 
 				// Test if mouse has moved enough
-				if(Math.Abs(d) > SystemParameters.MinimumHorizontalDragDistance)
+				if (Math.Abs(d) > SystemParameters.MinimumHorizontalDragDistance)
 				{
-					// Set muliplier depending on shif or control key is down
+					// Set multiplier depending on shift or control key is down
 					if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) _multiplier = 0.001;
 					else if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) _multiplier = 0.1;
 					else _multiplier = 0.01;

@@ -32,11 +32,11 @@ using System.Text;
 namespace Savage_Editor
 {
 	[DataContract(IsReference = true)]
-	public class ViewModelBase : INotifyPropertyChanged // Public class for impleminting INotify
+	public class ViewModelBase : INotifyPropertyChanged // Public class for implementing INotify
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		protected void OnPropertyChanged(string propertyName) // Handels changed string properies
+		protected void OnPropertyChanged(string propertyName) // Handels changed string proprieties
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // Invokes an event
 		}

@@ -39,13 +39,13 @@ namespace Savage_Editor.Utilities
 	{
 		public static float Epsilon => 0.00001f;
 
-		// Allow for close enough becasue floats are evil
+		// Allow for close enough because floats are evil
 		public static bool IsTheSameAs(this float value, float other)
 		{
 			return Math.Abs(value - other) < Epsilon;
 		}
 
-		// Allow for close enough with nullable values becasue floats are evil
+		// Allow for close enough with null-able values because floats are evil
 		public static bool IsTheSameAs(this float? value, float? other)
 		{
 			if (!value.HasValue || !other.HasValue) return false;

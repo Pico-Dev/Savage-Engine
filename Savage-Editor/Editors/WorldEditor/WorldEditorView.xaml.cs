@@ -55,7 +55,6 @@ namespace Savage_Editor.Editors
 		{
 			Loaded -= OnWorldEditorViewLoaded;
 			Focus(); // Set focus
-			((INotifyCollectionChanged)Project.UndoRedo.UndoList).CollectionChanged += (s, e) => Focus(); // Readd focus after each undo or redo
 		}
 	}
 }

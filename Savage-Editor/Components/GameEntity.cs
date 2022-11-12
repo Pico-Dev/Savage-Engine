@@ -73,9 +73,10 @@ namespace Savage_Editor.Components
 						EntityID = EngineAPI.CreateGameEntity(this);
 						Debug.Assert(ID.IsValid(_entityID));
 					}
-					else // Should be removed
+					else if(ID.IsValid(_entityID))// Should be removed
 					{
 						EngineAPI.RemoveGameEntity(this);
+						EntityID = ID.INVALID_ID;
 					}
 					OnPropertyChanged(nameof(IsActive));
 				}
@@ -134,16 +135,16 @@ namespace Savage_Editor.Components
 		public GameEntity(Scene scene)
 		{
 			Debug.Assert(scene != null); // It should never be null ever
-			ParentScene = scene; // Get internal refrence
+			ParentScene = scene; // Get internal reference
 			_components.Add(new Transform(this));
 			OnDeserialized(new StreamingContext());
 		}
 	}
 
-	// Multiselection
+	// Multi-selection
 	abstract class MSEntity : ViewModelBase
 	{
-		private bool _enableUpdates = true; // Enables update toi selected entities
+		private bool _enableUpdates = true; // Enables update to selected entities
 		private bool? _isEnbaled;
 		[DataMember]
 		public bool? IsEnbaled
@@ -177,45 +178,48 @@ namespace Savage_Editor.Components
 		private readonly ObservableCollection<IMSComponent> _components = new ObservableCollection<IMSComponent>();
 		public ReadOnlyObservableCollection<IMSComponent> Components { get; }
 
+		public T GetMSComponent<T>() where T : IMSComponent
+		{
+			return (T)Components.FirstOrDefault(x => x.GetType() == typeof(T));
+		}
+
 		public List<GameEntity> SelectedEntities { get; }
 
-		public static float? GetMixedValue(List<GameEntity> entities, Func<GameEntity, float> getProperty)
+		private void MakeComponentList()
 		{
-			var value = getProperty(entities.First()); // Get property of first entity
-			foreach (var entity in entities.Skip(1)) // Get value of all other entities
+			_components.Clear(); // CLear the list
+			var firstEntity = SelectedEntities.FirstOrDefault();
+			if (firstEntity == null) return;
+
+			foreach (var component in firstEntity.Components) // Go through all components in the entity
 			{
-				if(!value.IsTheSameAs(getProperty(entity))) // If they differ return null
+				var type = component.GetType(); // Get it's type
+				// See if all selected entities have the same component
+				if(!SelectedEntities.Skip(1).Any(entity => entity.GetComponent(type) == null))
 				{
-					return null;
+					// Should not be in the list already
+					Debug.Assert(Components.FirstOrDefault(x => x.GetType() == type) == null);
+					_components.Add(component.GetMultiselectionComponent(this)); // Add the component to the list
 				}
 			}
-			return value;
 		}
 
-		public static bool? GetMixedValue(List<GameEntity> entities, Func<GameEntity, bool> getProperty)
+		public static float? GetMixedValue<T>(List<T> objects, Func<T, float> getProperty)
 		{
-			var value = getProperty(entities.First()); // Get property of first entity
-			foreach (var entity in entities.Skip(1)) // Get value of all other entities
-			{
-				if (value != getProperty(entity)) // If they differ return null
-				{
-					return null;
-				}
-			}
-			return value;
+			var value = getProperty(objects.First()); // Get property of first entity
+			return objects.Skip(1).Any(x => !getProperty(x).IsTheSameAs(value)) ? (float?)null : value;
 		}
 
-		public static string GetMixedValue(List<GameEntity> entities, Func<GameEntity, string> getProperty)
+		public static bool? GetMixedValue<T>(List<T> objects, Func<T, bool> getProperty)
 		{
-			var value = getProperty(entities.First()); // Get property of first entity
-			foreach (var entity in entities.Skip(1)) // Get value of all other entities
-			{
-				if (value != getProperty(entity)) // If they differ return null
-				{
-					return null;
-				}
-			}
-			return value;
+			var value = getProperty(objects.First()); // Get property of first entity
+			return objects.Skip(1).Any(x => value != getProperty(x)) ? (bool?)null : value;
+		}
+
+		public static string GetMixedValue<T>(List<T> objects, Func<T, string> getProperty)
+		{
+			var value = getProperty(objects.First()); // Get property of first entity
+			return objects.Skip(1).Any(x => value != getProperty(x)) ? null : value;
 		}
 		protected virtual bool UpdateGameEntities(string propertyName)
 		{
@@ -239,6 +243,7 @@ namespace Savage_Editor.Components
 		{
 			_enableUpdates = false;
 			UpdateMSGameEntities();
+			MakeComponentList();
 			_enableUpdates = true;
 		}
 
@@ -247,7 +252,7 @@ namespace Savage_Editor.Components
 			Debug.Assert(entities?.Any() == true); // Can't be null or empty
 			Components = new ReadOnlyObservableCollection<IMSComponent>(_components);
 			SelectedEntities = entities;
-			PropertyChanged += (s, e) => { if(_enableUpdates) UpdateGameEntities(e.PropertyName); }; // Update properies of all game entities that were changed
+			PropertyChanged += (s, e) => { if(_enableUpdates) UpdateGameEntities(e.PropertyName); }; // Update proprieties of all game entities that were changed
 		}
 	}
 

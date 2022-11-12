@@ -61,7 +61,7 @@ private:
 
 	void create_random()
 	{
-		u32 count = rand() % 20; // Get random ammount
+		u32 count = rand() % 20; // Get random amount
 		if (_entities.empty()) count = 1000; // keep a minimum of 1000 entities
 		transform::init_info transform_info{}; // Create a transform component
 		game_entity::entity_info entity_info{
@@ -81,7 +81,7 @@ private:
 
 	void remove_random()
 	{
-		u32 count = rand() % 20; // Get random ammount
+		u32 count = rand() % 20; // Get random amount
 		if (_entities.size() < 1000) return; // keep a minimum of 1000 entities
 		while (count > 0)
 		{
@@ -102,7 +102,7 @@ private:
 	void print_results()
 	{
 		std::cout << "Entities Created: " << _added << std::endl;
-		std::cout << "Entities Deleated: " << _removed << std::endl;
+		std::cout << "Entities Deleted: " << _removed << std::endl;
 	}
 
 	utl::vector<game_entity::entity> _entities;

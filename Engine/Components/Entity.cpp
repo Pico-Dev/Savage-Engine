@@ -33,7 +33,7 @@ namespace savage::game_entity {
 		// Vector of transforms
 		utl::vector<transform::component>	transforms;
 
-		// Get an aray of generations
+		// Get an array of generations
 		utl::vector<id::generation_type>	generations;
 		// Get free unused IDs
 		utl::deque<entity_id>				free_ids;
@@ -66,7 +66,7 @@ namespace savage::game_entity {
 			generations.push_back(0);
 
 			// Resize components
-			// NOTE: we don't use resize() in order to keep the number of memeory allocations low
+			// NOTE: we don't use resize() in order to keep the number of memory allocations low
 			transforms.emplace_back();
 		}
 

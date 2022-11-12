@@ -47,7 +47,7 @@ namespace Savage_Editor.Utilities.Controls
 			get => (VectorType)GetValue(VectorTypeProperty);
 			set => SetValue(VectorTypeProperty, value);
 		}
-		// Backing field for depenency property
+		// Backing field for dependency property
 		public static readonly DependencyProperty VectorTypeProperty =
 			DependencyProperty.Register(nameof(VectorType), typeof(VectorType), typeof(VectorBox),
 			new PropertyMetadata(VectorType.Vector3));
@@ -58,7 +58,7 @@ namespace Savage_Editor.Utilities.Controls
 			get => (Orientation)GetValue(OrientationProperty);
 			set => SetValue(OrientationProperty, value);
 		}
-		// Backing field for depenency property
+		// Backing field for dependency property
 		public static readonly DependencyProperty OrientationProperty =
 			DependencyProperty.Register(nameof(Orientation), typeof(Orientation), typeof(VectorBox),
 			new PropertyMetadata(Orientation.Horizontal));
@@ -69,7 +69,7 @@ namespace Savage_Editor.Utilities.Controls
 			get => (double)GetValue(MultiplierProperty);
 			set => SetValue(MultiplierProperty, value);
 		}
-		// Backing field for depenency property
+		// Backing field for dependency property
 		public static readonly DependencyProperty MultiplierProperty =
 			DependencyProperty.Register(nameof(Multiplier), typeof(double), typeof(VectorBox),
 			new PropertyMetadata(1.0));

@@ -23,60 +23,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
-using Savage_Editor.GameProject;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Savage_Editor
+namespace Savage_Editor.Editors
 {
-	public partial class MainWindow : Window
+	[ContentProperty("ComponentContent")]
+	public partial class ComponentView : UserControl
 	{
-		public MainWindow()
+
+		public string Header
+		{
+			get { return (string)GetValue(HeaderProperty); }
+			set { SetValue(HeaderProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Header.
+		public static readonly DependencyProperty HeaderProperty =
+			DependencyProperty.Register(nameof(Header), typeof(string), typeof(ComponentView));
+
+
+
+		public FrameworkElement ComponentContent
+		{
+			get { return (FrameworkElement)GetValue(ComponentContentProperty); }
+			set { SetValue(ComponentContentProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for ComponentContent.
+		public static readonly DependencyProperty ComponentContentProperty =
+			DependencyProperty.Register(nameof(ComponentContent), typeof(FrameworkElement), typeof(ComponentView));
+
+
+		public ComponentView()
 		{
 			InitializeComponent();
-			Loaded += OnMainWindowLoaded; // Create reference
-			Closing += OnMainWindowClosing; // Unload project
-		}
-
-
-		private void OnMainWindowLoaded(object sender, RoutedEventArgs e)
-		{
-			Loaded -= OnMainWindowLoaded; // Deference
-			OpenProjectBrowserDialog(); // Open the dialog window
-		}
-
-		private void OnMainWindowClosing(object sender, CancelEventArgs e)
-		{
-			Closing -= OnMainWindowClosing; // Deference
-			Project.Current?.Unload(); // Unload the project
-		}
-
-		private void OpenProjectBrowserDialog()
-		{
-			var projectBrowser = new ProjectBrowserDialog(); // Create instance of project browser
-			if (projectBrowser.ShowDialog() == false || projectBrowser.DataContext == null) // Test if user closes dialog window or the project is null
-			{
-				Application.Current.Shutdown(); // Terminate the app
-			}
-			else
-			{
-				Project.Current?.Unload(); // Unload old project if any
-				DataContext = projectBrowser.DataContext; // load the project
-			}
 		}
 	}
 }

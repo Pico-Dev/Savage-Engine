@@ -67,15 +67,15 @@ namespace Savage_Editor.GameProject
 		{ get; }
 		private static void ReadProjectData()
 		{
-			if (File.Exists(_projectDataPath)) // Chech if porject exists
+			if (File.Exists(_projectDataPath)) // Check if project exists
 			{
-				var projects = Serializer.FromFile<ProjectDataList>(_projectDataPath).Projects.OrderByDescending(x => x.Date); // Deserialize the data and order it form new to old
+				var projects = Serializer.FromFile<ProjectDataList>(_projectDataPath).Projects.OrderByDescending(x => x.Date); // De-serialize the data and order it form new to old
 				_projects.Clear();
 				foreach (var project in projects)
 				{
-					if (File.Exists(project.FullPath)) // Make sure it was not deleated
+					if (File.Exists(project.FullPath)) // Make sure it was not deleted
 					{
-						// Get the Icon and Screenshot
+						// Get the Icon and Screen-shot
 						project.Icon = File.ReadAllBytes($@"{project.ProjectPath}\.Savage\Icon.png");
 						project.Screenshot = File.ReadAllBytes($@"{project.ProjectPath}\.Savage\Screenshot.png");
 						_projects.Add(project); // Add it to the list
@@ -99,7 +99,7 @@ namespace Savage_Editor.GameProject
 			{
 				project.Date = DateTime.Now;
 			}
-			// If the project is new set the data, date and, add it to the project xml file
+			// If the project is new set the data, date and, add it to the project XML file
 			else
 			{
 				project = data;
@@ -112,12 +112,12 @@ namespace Savage_Editor.GameProject
 		}
 
 
-		static OpenProject() // Remeber location of project
+		static OpenProject() // Remember location of project
 		{
 			try
 			{
 				if (!Directory.Exists(_applicationDataPath)) Directory.CreateDirectory(_applicationDataPath); // Create appdata folder if needed
-				_projectDataPath = $@"{_applicationDataPath}ProjectData.xml"; // Look for xml file
+				_projectDataPath = $@"{_applicationDataPath}ProjectData.xml"; // Look for XML file
 				Projects = new ReadOnlyObservableCollection<ProjectData>(_projects); // Make observable list
 				ReadProjectData(); 
 			}
