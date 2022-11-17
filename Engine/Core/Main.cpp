@@ -23,50 +23,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma once
+/*	Things to do to create a game project
 
-// Set use of custom versions of STL functions
-#define USE_STL_VECTOR 1
-#define USE_STL_DEQUE 1
+		1) Generate an MSVC solution/project
+		2) Add files to the game project
+		3) Set include and library directories
+		4) Set force include file (GameEntity.h)
+		5) Set C++ version and calling convention
+*/
 
-#if USE_STL_VECTOR
-#include <vector>
-namespace savage::utl {
-	template<typename T>
-	using vector = std::vector<T>;
-
-	// Swap two elements in a vector and remove the last element in the vector
-	template<typename T>
-	void erase_unordered(std::vector<T>& v, size_t index)
-	{
-		// If the vector has two or more elements
-		if (v.size() > 1)
-		{
-			// We will swap the element at the index with the last element
-			std::iter_swap(v.begin() + index, v.end() - 1);
-			// Then we will remove the last element
-			v.pop_back();
-		}
-		// If the vector has one element or is empty
-		else
-		{
-			// We will just clear the vector
-			v.clear();
-		}
-	}
-}
-#endif
-
-#if USE_STL_DEQUE
-#include <deque>
-namespace savage::utl {
-	template<typename T>
-	using deque = std::deque<T>;
-}
-#endif
-
-namespace savage::util {
-
-	// TODO: make custom version of STL functions
-
+int main()
+{
+	return 0;
 }

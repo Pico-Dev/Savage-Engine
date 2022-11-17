@@ -25,6 +25,7 @@ SOFTWARE.
 
 #include "Entity.h"
 #include "Transform.h"
+#include "Script.h"
 
 namespace savage::game_entity {
 
@@ -32,6 +33,7 @@ namespace savage::game_entity {
 
 		// Vector of transforms
 		utl::vector<transform::component>	transforms;
+		utl::vector<script::component>	scripts;
 
 		// Get an array of generations
 		utl::vector<id::generation_type>	generations;
@@ -41,7 +43,7 @@ namespace savage::game_entity {
 	} // Anonymous namespace
 
 	// Create game entity and get its index
-	entity create_game_entity(const entity_info& info) 
+	entity create(entity_info info) 
 	{
 		assert(info.transform); // All game entities must have a transform
 		if (!info.transform) return entity{};
@@ -52,7 +54,7 @@ namespace savage::game_entity {
 		if (free_ids.size() > id::min_deleted_elements)
 		{
 			id = free_ids.front(); // Find first free slot
-			assert(!is_alive(entity{ id }));
+			assert(!is_alive(id));
 			free_ids.pop_front(); // Remove it form the free ids as it being used
 			// Increase the generation of the slot
 			id = entity_id{ id::new_generation(id) };
@@ -75,31 +77,36 @@ namespace savage::game_entity {
 
 		// Create transform component
 		assert(!transforms[index].is_valid());
-		transforms[index] = transform::create_transform(*info.transform, new_entity);
+		transforms[index] = transform::create(*info.transform, new_entity);
 		if (!transforms[index].is_valid()) return {};
+
+		// Create script component
+		if (info.script && info.script->script_creator)
+		{
+			assert(!scripts[index].is_valid());
+			scripts[index] = script::create(*info.script, new_entity);
+			assert(scripts[index].is_valid());
+		}
 
 		return new_entity;
 	}
 
 	// Remove game entity
-	void remove_game_entity(entity e) 
+	void remove(entity_id id) 
 	{
-		const entity_id id{ e.get_id() };
 		const id::id_type index{ id::index(id) };
-		assert(is_alive(e)); // Should be alive
-		if (is_alive(e))
-		{
-			transform::remove_transform(transforms[index]); // Remove the transform
-			transforms[index] = {};
-			free_ids.push_back(id); // Free the spot in the array
-		}
+		assert(is_alive(id)); // Should be alive
+		
+		transform::remove(transforms[index]); // Remove the transform
+		transforms[index] = {};
+		free_ids.push_back(id); // Free the spot in the array
+		
 	}
 
 	// Check if entity has same generation as spot
-	bool is_alive(entity e) 
+	bool is_alive(entity_id id) 
 	{
-		assert(e.is_valid()); // Must be valid
-		const entity_id id{ e.get_id() }; // Get entity ID
+		assert(id::is_valid(id)); // Must be valid
 		const id::id_type index{ id::index(id) }; // Get entity index
 		assert(index < generations.size()); // Index must be within current generations
 		assert(generations[index] == id::generation(id));
@@ -108,9 +115,16 @@ namespace savage::game_entity {
 
 	transform::component entity::transform() const
 	{
-		assert(is_alive(*this));
+		assert(is_alive(_id));
 		const id::id_type index{ id::index(_id) }; // Get index
 		return transforms[index]; // Return the transform for the index
+	}
+
+	script::component entity::script() const
+	{
+		assert(is_alive(_id));
+		const id::id_type index{ id::index(_id) }; // Get index
+		return scripts[index]; // Return the script for the index
 	}
 
 }

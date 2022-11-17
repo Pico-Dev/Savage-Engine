@@ -24,49 +24,25 @@ SOFTWARE.
 */
 
 #pragma once
+#include "..\Components\ComponentsCommon.h"
 
-// Set use of custom versions of STL functions
-#define USE_STL_VECTOR 1
-#define USE_STL_DEQUE 1
+namespace savage::script {
 
-#if USE_STL_VECTOR
-#include <vector>
-namespace savage::utl {
-	template<typename T>
-	using vector = std::vector<T>;
+	// Define typed ID for transform component
+	DEFINE_TYPED_ID(script_id);
 
-	// Swap two elements in a vector and remove the last element in the vector
-	template<typename T>
-	void erase_unordered(std::vector<T>& v, size_t index)
+	class component final
 	{
-		// If the vector has two or more elements
-		if (v.size() > 1)
-		{
-			// We will swap the element at the index with the last element
-			std::iter_swap(v.begin() + index, v.end() - 1);
-			// Then we will remove the last element
-			v.pop_back();
-		}
-		// If the vector has one element or is empty
-		else
-		{
-			// We will just clear the vector
-			v.clear();
-		}
-	}
-}
-#endif
+	public:
+		// When making an instance of this class without a parameter for the constructor it will return an invalid ID
+		constexpr explicit component(script_id id) : _id{ id } {}
+		constexpr component() : _id{ id::invalid_id } {}
+		// If the transform has a valid ID it will return that
+		constexpr script_id get_id() const { return _id; }
+		// Check if ID is valid
+		constexpr bool is_valid() const { return id::is_valid(_id); }
 
-#if USE_STL_DEQUE
-#include <deque>
-namespace savage::utl {
-	template<typename T>
-	using deque = std::deque<T>;
-}
-#endif
-
-namespace savage::util {
-
-	// TODO: make custom version of STL functions
-
+	private:
+		script_id _id;
+	};
 }

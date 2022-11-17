@@ -24,6 +24,6 @@ SOFTWARE.
 */
 
 #pragma once
-#include "CommonHeaders.h"
-#include "ID.h"
+#include "..\Common\CommonHeaders.h"
+#include "..\Common\ID.h"
 #include "..\EngineAPI\GameEntity.h"

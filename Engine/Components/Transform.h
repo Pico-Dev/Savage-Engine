@@ -38,7 +38,7 @@ namespace savage::transform {
 	};
 
 	// Create transform component
-	component create_transform(const init_info& info, game_entity::entity entity);
+	component create(init_info info, game_entity::entity entity);
 	// Remove transform component
-	void remove_transform(component c);
+	void remove(component c);
 }
