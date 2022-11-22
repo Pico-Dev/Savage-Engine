@@ -28,6 +28,7 @@ using Savage_Editor.GameProject;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,12 +40,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Savage_Editor
 {
 	public partial class MainWindow : Window
 	{
+		public static string SavagePath { get; private set; }
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -56,7 +58,35 @@ namespace Savage_Editor
 		private void OnMainWindowLoaded(object sender, RoutedEventArgs e)
 		{
 			Loaded -= OnMainWindowLoaded; // Deference
+			GetEnginePath();
 			OpenProjectBrowserDialog(); // Open the dialog window
+		}
+
+		private void GetEnginePath()
+		{
+			// Get the environment variable
+			var enginePath = Environment.GetEnvironmentVariable("SAVAGE_ENGINE", EnvironmentVariableTarget.User);
+
+			// Check if the environment variable is valid or not
+			if (enginePath == null || !Directory.Exists(Path.Combine(enginePath, @"Engine\EngineAPI")))
+			{
+				var dlg = new EnginePathDialog();
+				if (dlg.ShowDialog() == true)
+				{
+					// Set the environment variable for the engine location
+					SavagePath = dlg.SavagePath;
+					Environment.SetEnvironmentVariable("SAVAGE_ENGINE", SavagePath.ToUpper(), EnvironmentVariableTarget.User);
+				}
+				else
+				{
+					Application.Current.Shutdown();
+				}
+			}
+			else
+			{
+				// Set the engine path
+				SavagePath = enginePath;
+			}
 		}
 
 		private void OnMainWindowClosing(object sender, CancelEventArgs e)

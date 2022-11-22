@@ -96,10 +96,10 @@ namespace savage::script
 		}
 
 		assert(id::is_valid(id));
+		const id::id_type index{ (id::id_type)entity_scripts.size() };
 		entity_scripts.emplace_back(info.script_creator(entity)); // Add instance to end of entity scripts
 		assert(entity_scripts.back()->get_id() == entity.get_id()); // Id of script class and entity should be the same
 		// Get location of where the entity script was added
-		const id::id_type index{ (id::id_type)entity_scripts.size() };
 		id_mapping[id::index(id)] = index;
 
 		return component{ id };

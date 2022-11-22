@@ -52,6 +52,7 @@ namespace Savage_Editor.GameProject
 		public string IconFilePath { get; set; }
 		public string ScreenshotFilePath { get; set; }
 		public string ProjectFilePath { get; set; }
+		public string TemplatePath { get; internal set; }
 	}
 
 	class NewProject : ViewModelBase
@@ -190,7 +191,9 @@ namespace Savage_Editor.GameProject
 				projectXml = string.Format(projectXml, ProjectName, ProjectPath);
 				var projectPath = Path.GetFullPath(Path.Combine(path, $"{ProjectName}{Project.Extension}")); // Construct project path
 				File.WriteAllText(projectPath, projectXml);
-				 
+
+				CreateMSVCSolution(template, path);
+
 				return path;
 			}
 			catch (Exception ex)
@@ -199,6 +202,32 @@ namespace Savage_Editor.GameProject
 				Logger.Log(MessageType.Error, $"Failed to create {ProjectName}");
 				throw;
 			}
+		}
+
+		private void CreateMSVCSolution(ProjectTemplate template, string projectPath)
+		{
+			// These files must exist
+			Debug.Assert(File.Exists(Path.Combine(template.TemplatePath, "MSVCSolution")));
+			Debug.Assert(File.Exists(Path.Combine(template.TemplatePath, "MSVCProject")));
+
+			// Get path to the engine API
+			var engineAPIPath = Path.Combine(MainWindow.SavagePath, @"Engine\EngineAPI");
+			Debug.Assert(!File.Exists(engineAPIPath));
+
+			// Read and generate solution for new project
+			var _0 = ProjectName;
+			var _1 = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+			var _2 = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+			var _3 = engineAPIPath; // Path to API
+			var _4 = MainWindow.SavagePath; // Include path
+
+			var soulution = File.ReadAllText(Path.Combine(template.TemplatePath, "MSVCSolution")); // Get the template
+			soulution = String.Format(soulution, _0, _1, _2); // Apply the changes 
+			File.WriteAllText(Path.GetFullPath(Path.Combine(projectPath, $"{_0}.sln")), soulution); // Write to new location
+
+			var project = File.ReadAllText(Path.Combine(template.TemplatePath, "MSVCProject")); // Get the template
+			project = String.Format(project, _0, _1, _3, _4); // Apply the changes 
+			File.WriteAllText(Path.GetFullPath(Path.Combine(projectPath, $@"GameCode\{_0}.vcxproj")), project); // Write to new location
 		}
 
 		public NewProject()
@@ -216,6 +245,7 @@ namespace Savage_Editor.GameProject
 					template.ScreenshotFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), "Screenshot.png")); // Get the template screen-shot
 					template.Screenshot = File.ReadAllBytes(template.ScreenshotFilePath); // Read the screen-shot data from the file
 					template.ProjectFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), template.ProjectFile)); // Get the project file path
+					template.TemplatePath = Path.GetDirectoryName(file); // Save the location of the template
 					_projectTemplates.Add(template);
 				}
 				ValidateProjectPath();

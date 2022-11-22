@@ -70,6 +70,7 @@ namespace savage::game_entity {
 			// Resize components
 			// NOTE: we don't use resize() in order to keep the number of memory allocations low
 			transforms.emplace_back();
+			scripts.emplace_back();
 		}
 
 		const entity new_entity{ id };
@@ -97,6 +98,13 @@ namespace savage::game_entity {
 		const id::id_type index{ id::index(id) };
 		assert(is_alive(id)); // Should be alive
 		
+		if (scripts[index].is_valid())
+		{
+			// Remove the script
+			script::remove(scripts[index]);
+			scripts[index] = {};
+		}
+
 		transform::remove(transforms[index]); // Remove the transform
 		transforms[index] = {};
 		free_ids.push_back(id); // Free the spot in the array

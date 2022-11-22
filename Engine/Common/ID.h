@@ -31,7 +31,7 @@ namespace savage::id {
 	// Set number of bits for entity IDs
 	using id_type = u32;
 
-	namespace internal {
+	namespace detail {
 		// Set number of entity bits reserved for entity generations. (Number of times an entity can safely change at that index.)
 		constexpr u32 generation_bits{ 10 };
 		// Set number of entity bits reserved for entity index. (Max number of entities loaded at one time.)
@@ -48,9 +48,9 @@ namespace savage::id {
 	constexpr u32 min_deleted_elements{ 1024 };
 
 	// Find smallest integer type that can fit the generation bits
-	using generation_type = std::conditional_t<internal::generation_bits <= 16, std::conditional_t<internal::generation_bits <= 8, u8, u16>, u32>;
+	using generation_type = std::conditional_t<detail::generation_bits <= 16, std::conditional_t<detail::generation_bits <= 8, u8, u16>, u32>;
 	// Generation type should not have less bits than generation bits
-	static_assert(sizeof(generation_type) * 8 >= internal::generation_bits);
+	static_assert(sizeof(generation_type) * 8 >= detail::generation_bits);
 	// Generation type should not be bigger than id type
 	static_assert(sizeof(id_type) - sizeof(generation_type) > 0);
 	
@@ -66,8 +66,8 @@ namespace savage::id {
 	index(id_type id) 
 	{
 		// Check if index is a valid value and give it back
-		id_type index{ id & internal::index_mask };
-		assert(index != internal::index_mask);
+		id_type index{ id & detail::index_mask };
+		assert(index != detail::index_mask);
 		return index;
 	}
 
@@ -75,7 +75,7 @@ namespace savage::id {
 	constexpr id_type
 	generation(id_type id)
 	{
-		return (id >> internal::index_bits) & internal::generation_mask;
+		return (id >> detail::index_bits) & detail::generation_mask;
 	}
 
 	// Increment generation bit when we make a new object at the same ID
@@ -83,13 +83,13 @@ namespace savage::id {
 	new_generation(id_type id)
 	{
 		const id_type generation{ id::generation(id) + 1 };
-		assert(generation < (((u64)1 << internal::generation_bits) -1 ));
-		return index(id) | (generation << internal::index_bits);
+		assert(generation < (((u64)1 << detail::generation_bits) -1 ));
+		return index(id) | (generation << detail::index_bits);
 	}
 
 	// Differentiates between debug build and release build to force id type
 #if _DEBUG
-	namespace internal {
+	namespace detail {
 		struct id_base
 		{
 			constexpr explicit id_base(id_type id) : _id{ id } {}
@@ -100,7 +100,7 @@ namespace savage::id {
 	}
 
 #define DEFINE_TYPED_ID(name)							\
-	struct name final : id::internal::id_base			\
+	struct name final : id::detail::id_base			\
 	{													\
 		constexpr explicit name(id::id_type id)			\
 			: id_base{ id } {}							\

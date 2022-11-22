@@ -85,7 +85,7 @@ namespace savage {
 #define REGISTER_SCRIPT(TYPE)													\
 			class TYPE;															\
 			namespace {															\
-				const u8 _reg##TYPE{ savage::script::detail::register_script(	\
+				const u8 _reg_##TYPE{ savage::script::detail::register_script(	\
 				savage::script::detail::string_hash()(#TYPE),					\
 				&savage::script::detail::create_script<TYPE>) };				\
 			}
