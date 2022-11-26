@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Savage_Editor.GameDev;
 using Savage_Editor.Utilities;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,8 @@ namespace Savage_Editor.GameProject
 		[DataMember]
 		public string Path { get; private set; }
 
-		public string FullPath => $@"{Path}{Name}\{Name}{Extension}";
+		public string FullPath => $@"{Path}{Name}{Extension}";
+		public string Solution => $@"{Path}{Name}.sln";
 
 		[DataMember(Name = "Scenes")]
 		private ObservableCollection<Scene> _scenes = new ObservableCollection<Scene>();
@@ -97,8 +99,10 @@ namespace Savage_Editor.GameProject
 
 		public void Unload()
 		{
+			VisualStudio.CloseVisualStudio();
 			UndoRedo.Reset();
 		}
+
 		public static void save(Project project) // Save
 		{
 			Serializer.ToFile(project, project.FullPath);

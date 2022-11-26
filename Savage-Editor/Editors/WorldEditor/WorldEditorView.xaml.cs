@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Savage_Editor.GameDev;
 using Savage_Editor.GameProject;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,11 @@ namespace Savage_Editor.Editors
 		{
 			Loaded -= OnWorldEditorViewLoaded;
 			Focus(); // Set focus
+		}
+
+		private void OnNewScript_Button_Click(object sender, RoutedEventArgs e)
+		{
+			new NewScriptDialog().ShowDialog();
 		}
 	}
 }

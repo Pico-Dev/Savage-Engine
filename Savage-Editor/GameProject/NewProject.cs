@@ -188,7 +188,7 @@ namespace Savage_Editor.GameProject
 				File.Copy(template.ScreenshotFilePath, Path.GetFullPath(Path.Combine(dirInfo.FullName, "Screenshot.png")));
 
 				var projectXml = File.ReadAllText(template.ProjectFilePath); // Read the template
-				projectXml = string.Format(projectXml, ProjectName, ProjectPath);
+				projectXml = string.Format(projectXml, ProjectName, path);
 				var projectPath = Path.GetFullPath(Path.Combine(path, $"{ProjectName}{Project.Extension}")); // Construct project path
 				File.WriteAllText(projectPath, projectXml);
 
@@ -240,12 +240,12 @@ namespace Savage_Editor.GameProject
 				foreach (var file in templateFiles) // Loop through all templates
 				{
 					var template = Serializer.FromFile<ProjectTemplate>(file); // De-serialize the XML files 
-					template.IconFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), "Icon.png")); // Get the template icon
-					template.Icon = File.ReadAllBytes(template.IconFilePath); // Read the icon data form the file
-					template.ScreenshotFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), "Screenshot.png")); // Get the template screen-shot
-					template.Screenshot = File.ReadAllBytes(template.ScreenshotFilePath); // Read the screen-shot data from the file
-					template.ProjectFilePath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(file), template.ProjectFile)); // Get the project file path
 					template.TemplatePath = Path.GetDirectoryName(file); // Save the location of the template
+					template.IconFilePath = Path.GetFullPath(Path.Combine(template.TemplatePath, "Icon.png")); // Get the template icon
+					template.Icon = File.ReadAllBytes(template.IconFilePath); // Read the icon data form the file
+					template.ScreenshotFilePath = Path.GetFullPath(Path.Combine(template.TemplatePath, "Screenshot.png")); // Get the template screen-shot
+					template.Screenshot = File.ReadAllBytes(template.ScreenshotFilePath); // Read the screen-shot data from the file
+					template.ProjectFilePath = Path.GetFullPath(Path.Combine(template.TemplatePath, template.ProjectFile)); // Get the project file path
 					_projectTemplates.Add(template);
 				}
 				ValidateProjectPath();
