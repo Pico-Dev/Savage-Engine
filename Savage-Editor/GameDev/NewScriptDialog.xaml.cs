@@ -54,7 +54,7 @@ namespace Savage_Editor.GameDev
 
 namespace {1} {{
 
-	REGISTER_SCRIPT({1});
+	REGISTER_SCRIPT({0});
 	void {0}::begin_play()
 	{{
 		// Happens once when created
@@ -96,7 +96,7 @@ namespace {1} {{
 
 		// Used to validate the name and path of the script
 		// Use the text in errorMsg to see what that code is looking for
-		bool Validate()
+		private bool Validate()
 		{
 			bool isValid = false;
 			var name = scriptName.Text.Trim();

@@ -65,7 +65,7 @@ SOFTWARE.
 	</UserControl.Resources>
 	<Grid>
 		<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" x:Name="scrollViewer" 
-					  Background="{StaticResource Editor.Window.GrayBrush2}">
+					  Background="{StaticResource Editor.Window.GrayBrush2}" Margin="0,32,0,0">
 			<ItemsControl ItemsSource="{Binding Source={x:Static local:Logger.FilterdMessages}}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>

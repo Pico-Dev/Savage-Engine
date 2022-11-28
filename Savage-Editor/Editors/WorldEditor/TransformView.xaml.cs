@@ -88,7 +88,7 @@ namespace Savage_Editor.Editors
 		private Action GetScaleAction() => GetAction((x) => (x, x.Scale), (x) => x.transform.Scale = x.Item2);
 
 		// Generic void to record actions to save on copy paste
-		private void RecordAction(Action redoAction, string name)
+		private void RecordActions(Action redoAction, string name)
 		{
 			if (_propertyChanged)
 			{
@@ -107,7 +107,7 @@ namespace Savage_Editor.Editors
 
 		private void OnPosition_VectorBox_PreviewMouse_LBU(object sender, MouseButtonEventArgs e)
 		{
-			RecordAction(GetPositionAction(), "Position Changed");
+			RecordActions(GetPositionAction(), "Position Changed");
 		}
 
 		private void OnRotation_VectorBox_PreviewMouse_LBD(object sender, MouseButtonEventArgs e)
@@ -118,7 +118,7 @@ namespace Savage_Editor.Editors
 
 		private void OnRotation_VectorBox_PreviewMouse_LBU(object sender, MouseButtonEventArgs e)
 		{
-			RecordAction(GetRotationAction(), "Rotation Changed");
+			RecordActions(GetRotationAction(), "Rotation Changed");
 		}
 
 		private void OnScale_VectorBox_PreviewMouse_LBD(object sender, MouseButtonEventArgs e)
@@ -129,7 +129,7 @@ namespace Savage_Editor.Editors
 
 		private void OnScale_VectorBox_PreviewMouse_LBU(object sender, MouseButtonEventArgs e)
 		{
-			RecordAction(GetScaleAction(), "Scale Changed");
+			RecordActions(GetScaleAction(), "Scale Changed");
 		}
 
 		private void OnPosition_VectorBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

@@ -1,4 +1,4 @@
-﻿/*
+/*
 	MIT License
 
 Copyright (c) 2022        Daniel McLarty
@@ -23,22 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-using System.Text;
+#pragma once
 
-namespace Savage_Editor
-{
-	[DataContract(IsReference = true)]
-	public class ViewModelBase : INotifyPropertyChanged // Public class for implementing INotify
-	{
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		protected void OnPropertyChanged(string propertyName) // Handels changed proprieties
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // Invokes an event
-		}
-	}
-}
+// Keep declarations consistent and avoid name mangling by the compiler
+#ifndef  EDITOR_INTERFACE
+#define EDITOR_INTERFACE extern "C" __declspec(dllexport)
+#endif // ! EDITOR_INTERFACE

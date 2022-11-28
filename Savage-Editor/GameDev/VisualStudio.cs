@@ -33,11 +33,15 @@ using System.Text;
 using System.Runtime.InteropServices.ComTypes;
 using System.Linq;
 using System.IO;
+using Savage_Editor.GameProject;
 
 namespace Savage_Editor.GameDev
 {
 	static class VisualStudio
 	{
+		public static bool BuildSucceeded { get; private set; } = true;
+		public static bool BuildDone { get; private set; } = true;
+
 		// Reference to the projects VS instance
 		private static EnvDTE80.DTE2 _vsInstance = null;
 		// VS program ID
@@ -169,6 +173,87 @@ namespace Savage_Editor.GameDev
 				return false;
 			}
 			return true;
+		}
+
+		private static void OnBuildSoulutionBegin(string project, string projectConfig, string platform, string solutionConfig)
+		{
+			Logger.Log(MessageType.Info, $"Building {project}, {projectConfig}, {platform}, {solutionConfig}");
+		}
+
+		private static void OnBuildSoulutionDone(string project, string projectConfig, string platform, string solutionConfig, bool success)
+		{
+			if (BuildDone) return;
+
+			if (success) Logger.Log(MessageType.Info, $"Building {projectConfig} configuration succeeded");
+			else Logger.Log(MessageType.Error, $"Building {projectConfig} configuration failed");
+
+			BuildDone = true;
+			BuildSucceeded = success;
+		}
+
+		public static bool IsDebugging()
+		{
+			bool result = false;
+
+			for (int i = 0; i < 3; i++)
+			{
+				try
+				{
+					// Look for open debugger
+					result = _vsInstance != null && (_vsInstance.Debugger.CurrentProgram != null || _vsInstance.Debugger.CurrentMode == EnvDTE.dbgDebugMode.dbgRunMode);
+				}
+				catch (Exception ex)
+				{
+					// Print exception and wait one second
+					Debug.WriteLine(ex.Message);
+					if (!result) System.Threading.Thread.Sleep(1000);
+				}
+			}
+			return result;
+		}
+
+		public static void BuildSolution(Project project, string configName, bool showWindow = true)
+		{
+			if(IsDebugging())
+			{
+				Logger.Log(MessageType.Error, "Visual Studio is currently running a process.");
+			}
+
+			OpenVisualStudio(project.Solution);
+			BuildDone = BuildSucceeded = false;
+
+			for (int i = 0; i < 3; i++)
+			{
+				try
+				{
+					if (!_vsInstance.Solution.IsOpen) _vsInstance.Solution.Open(project.Solution); // Make sure solution is open
+					_vsInstance.MainWindow.Visible = showWindow;
+
+					_vsInstance.Events.BuildEvents.OnBuildProjConfigBegin += OnBuildSoulutionBegin;
+					_vsInstance.Events.BuildEvents.OnBuildProjConfigDone += OnBuildSoulutionDone;
+
+					// Remove all old PDB files not in use
+					try
+					{
+						foreach (var pdbFile in Directory.GetFiles(Path.Combine($"{project.Path}", $@"x64\{configName}"), "*.pdb"))
+						{
+							File.Delete(pdbFile);
+						}
+					}
+					catch (Exception ex) { Debug.WriteLine(ex.Message); }
+
+					// Set the config and build the game
+					_vsInstance.Solution.SolutionBuild.SolutionConfigurations.Item(configName).Activate();
+					_vsInstance.ExecuteCommand("Build.BuildSolution");
+				}
+				catch (Exception ex)
+				{
+					// Print exception and wait one second
+					Debug.WriteLine(ex.Message);
+					Debug.WriteLine($"Attempt {i}: failed to build {project.Name}");
+					System.Threading.Thread.Sleep(1000);
+				}
+			}
 		}
 	}
 }

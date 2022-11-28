@@ -53,31 +53,38 @@ namespace Savage_Editor.DLLWrappers
 {
 	static class EngineAPI
 	{
-		private const string _dllName = "EngineDLL.dll";
+		private const string _engineDLL = "EngineDLL.dll";
+		[DllImport(_engineDLL, CharSet = CharSet.Ansi)]
+		public static extern int LoadGameCodeDLL(string dllPath);
+		[DllImport(_engineDLL)]
+		public static extern int UnloadGameCodeDLL();
 
-		// Convert editor entity to engine entity
-		[DllImport(_dllName)]
-		private static extern int CreateGameEntity(GameEntityDescriptor desc);
-		public static int CreateGameEntity(GameEntity entity)
+		internal static class EntityAPI
 		{
-			GameEntityDescriptor desc = new GameEntityDescriptor();
-
-			// Transform component
+			// Convert editor entity to engine entity
+			[DllImport(_engineDLL)]
+			private static extern int CreateGameEntity(GameEntityDescriptor desc);
+			public static int CreateGameEntity(GameEntity entity)
 			{
-				var c = entity.GetComponent<Transform>();
-				desc.Transform.Position = c.Position;
-				desc.Transform.Rotation = c.Rotation;
-				desc.Transform.Scale = c.Scale;
+				GameEntityDescriptor desc = new GameEntityDescriptor();
+
+				// Transform component
+				{
+					var c = entity.GetComponent<Transform>();
+					desc.Transform.Position = c.Position;
+					desc.Transform.Rotation = c.Rotation;
+					desc.Transform.Scale = c.Scale;
+				}
+
+				return CreateGameEntity(desc);
 			}
 
-			return CreateGameEntity(desc);
-		}
-
-		[DllImport(_dllName)]
-		private static extern void RemoveGameEntity(int id);
-		public static void RemoveGameEntity(GameEntity entity)
-		{
-			RemoveGameEntity(entity.EntityID);
+			[DllImport(_engineDLL)]
+			private static extern void RemoveGameEntity(int id);
+			public static void RemoveGameEntity(GameEntity entity)
+			{
+				RemoveGameEntity(entity.EntityID);
+			}
 		}
 	}
 }

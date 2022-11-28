@@ -70,12 +70,12 @@ namespace Savage_Editor.Components
 					_isActive = value;
 					if(_isActive) // Should be loaded
 					{
-						EntityID = EngineAPI.CreateGameEntity(this);
+						EntityID = EngineAPI.EntityAPI.CreateGameEntity(this);
 						Debug.Assert(ID.IsValid(_entityID));
 					}
 					else if(ID.IsValid(_entityID))// Should be removed
 					{
-						EngineAPI.RemoveGameEntity(this);
+						EngineAPI.EntityAPI.RemoveGameEntity(this);
 						EntityID = ID.INVALID_ID;
 					}
 					OnPropertyChanged(nameof(IsActive));
