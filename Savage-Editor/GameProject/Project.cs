@@ -80,6 +80,20 @@ namespace Savage_Editor.GameProject
 		public BuildConfiguration StandAloneBiuldConfig => BuildConfig == 0 ? BuildConfiguration.Debug : BuildConfiguration.Release;
 		public BuildConfiguration DLLBiuldConfig => BuildConfig == 0 ? BuildConfiguration.DebugEditor : BuildConfiguration.ReleaseEditor;
 
+		private string[] _availableScripts;
+		public string[] AvailableScripts
+		{
+			get => _availableScripts;
+			set
+			{
+				if (_availableScripts != value)
+				{
+					_availableScripts = value;
+					OnPropertyChanged(nameof(AvailableScripts));
+				}
+			}
+		}
+
 		[DataMember(Name = "Scenes")]
 		private ObservableCollection<Scene> _scenes = new ObservableCollection<Scene>();
 		public ReadOnlyObservableCollection<Scene> Scenes { get; private set; }
@@ -200,9 +214,13 @@ namespace Savage_Editor.GameProject
 			var configName = _getConfigurationNames(DLLBiuldConfig);
 			var dll = $@"{Path}x64\{configName}\{Name}.dll";
 
+			AvailableScripts = null;
+
 			// Load the DLL
 			if(File.Exists(dll) && EngineAPI.LoadGameCodeDLL(dll) != 0)
 			{
+				// Find the scripts
+				AvailableScripts = EngineAPI.GetScriptNames();
 				Logger.Log(MessageType.Info, "Game Code DLL loaded successfully.");
 			}
 			else // If the DLL fails to load
@@ -217,6 +235,7 @@ namespace Savage_Editor.GameProject
 			if(EngineAPI.UnloadGameCodeDLL() != 0)
 			{
 				Logger.Log(MessageType.Info, "Game Code DLL unloaded.");
+				AvailableScripts = null;
 			}
 		}
 

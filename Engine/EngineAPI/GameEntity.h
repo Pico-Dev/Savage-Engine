@@ -73,6 +73,11 @@ namespace savage {
 
 			// Register a script with the engine
 			u8 register_script(size_t, script_creator);
+#ifdef USE_WITH_EDITOR
+			extern "C" __declspec(dllexport)
+#endif //USE_WITH_EDITOR
+			// Get the script creator from the DLL
+			script_creator get_script_creator(size_t tag);
 
 			// Script creation function
 			template<class script_class>
@@ -82,13 +87,28 @@ namespace savage {
 				// Create an instance of the script and return a pointer to the script
 				return std::make_unique<script_class>(entity);
 			}
+
+#ifdef USE_WITH_EDITOR
+			// Add a script name for the level editor
+			u8 add_script_name(const char* name);
+
 #define REGISTER_SCRIPT(TYPE)													\
-			class TYPE;															\
+			namespace {															\
+			const u8 _reg_##TYPE												\
+			{	savage::script::detail::register_script(						\
+				savage::script::detail::string_hash()(#TYPE),					\
+				&savage::script::detail::create_script<TYPE>) };				\
+			const u8 _name_##TYPE												\
+			{ savage::script::detail::add_script_name(#TYPE) };					\
+			}																	
+#else
+#define REGISTER_SCRIPT(TYPE)													\
 			namespace {															\
 				const u8 _reg_##TYPE{ savage::script::detail::register_script(	\
 				savage::script::detail::string_hash()(#TYPE),					\
 				&savage::script::detail::create_script<TYPE>) };				\
 			}
+#endif // USE_WITH_EDITOR
 		} // namespace detail
 	} // namespace script
 }

@@ -43,9 +43,16 @@ namespace Savage_Editor.EngineAPIStructs
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+	class ScriptComponent
+	{
+		public IntPtr ScriptCreator;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
 	class GameEntityDescriptor
 	{
 		public TransformComponent Transform = new TransformComponent();
+		public ScriptComponent Script = new ScriptComponent();
 	}
 } // Anonymous namespace
 
@@ -58,6 +65,11 @@ namespace Savage_Editor.DLLWrappers
 		public static extern int LoadGameCodeDLL(string dllPath);
 		[DllImport(_engineDLL)]
 		public static extern int UnloadGameCodeDLL();
+		[DllImport(_engineDLL)]
+		public static extern IntPtr GetScriptCreator(string name);
+		[DllImport(_engineDLL)]
+		[return: MarshalAs(UnmanagedType.SafeArray)]
+		public static extern string[] GetScriptNames();
 
 		internal static class EntityAPI
 		{
@@ -74,6 +86,10 @@ namespace Savage_Editor.DLLWrappers
 					desc.Transform.Position = c.Position;
 					desc.Transform.Rotation = c.Rotation;
 					desc.Transform.Scale = c.Scale;
+				}
+				// Script component
+				{
+					//var c= entity.GetComponent<Script>();
 				}
 
 				return CreateGameEntity(desc);

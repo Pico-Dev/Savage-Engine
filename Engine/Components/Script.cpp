@@ -47,6 +47,18 @@ namespace savage::script
 			return reg;
 		}
 
+#ifdef USE_WITH_EDITOR
+		utl::vector<std::string>& script_names()
+		{
+			// NOTE: This variable must be in the function because of the 
+			//		 initialization order of the data. This way we can make sure
+			//		 the data is initialized before using it.
+			static utl::vector<std::string> names;
+			return names;
+		}
+#endif // USE_WITH_EDITOR
+
+
 		bool exists(script_id id)
 		{
 			assert(id::is_valid(id)); // ID must be valid
@@ -63,12 +75,28 @@ namespace savage::script
 		u8 register_script(size_t tag, script_creator func)
 		{
 			// Get the registry then add a pair with a tag and function pointer
-			// Then returns a pair in which the second member is a bool that lets us know if the inset succeeded
+			// Then returns a pair in which the second member is a bool that lets us know if the insert succeeded
 			bool result{ registry().insert(script_registry::value_type{tag, func}).second };
 			assert(result);
 			return result;
 		}
+
+		script_creator get_script_creator(size_t tag)
+		{
+			// Lookup the script creator using its tag
+			auto script = savage::script::registry().find(tag);
+			assert(script != savage::script::registry().end() && script->first == tag);
+			return script->second;
+		}
 	} // detail namespace
+
+#ifdef USE_WITH_EDITOR
+	u8 add_script_name(const char* name)
+	{
+		script_names().emplace_back(name);
+		return true;
+	}
+#endif // USE_WITH_EDITOR
 
 	component create(init_info info, game_entity::entity entity)
 	{
@@ -116,3 +144,25 @@ namespace savage::script
 		id_mapping[id::index(id)] = id::invalid_id; // Set the removed component to an invalid ID
 	}
 }
+
+#ifdef USE_WITH_EDITOR
+#include <atlsafe.h>
+
+extern "C" __declspec(dllexport)
+LPSAFEARRAY
+get_script_names()
+{
+	// Get the size of the strings
+	const u32 size{ (u32)savage::script::script_names().size() };
+	if (!size) return nullptr;
+	// Reserve memory for the strings
+	CComSafeArray<BSTR> names(size);
+	for (u32 i{ 0 }; i < size; i++)
+	{
+		// Convert the strings to be used in the editor
+		names.SetAt(i, A2BSTR_EX(savage::script::script_names()[i].c_str()), false);
+	}
+	// Returns array of names
+	return names.Detach();
+}
+#endif // USE_WITH_EDITOR

@@ -31,18 +31,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Linq.Expressions;
-using System.Windows.Input;
 using Savage_Editor.Utilities;
-using System.ComponentModel;
-using System.Windows.Documents;
 using Savage_Editor.DLLWrappers;
 
 namespace Savage_Editor.Components
 {
 	[DataContract]
 	[KnownType(typeof(Transform))]
+	[KnownType(typeof(Script))]
 	class GameEntity : ViewModelBase
 	{
 		private int _entityID = ID.INVALID_ID;
@@ -121,6 +117,38 @@ namespace Savage_Editor.Components
 
 		public Component GetComponent(Type type) => Components.FirstOrDefault(c => c.GetType() == type);
 		public T GetComponent<T>() where T : Component => GetComponent(typeof(T)) as T;
+
+		public bool AddComponet(Component component)
+		{
+			// Cant be null
+			Debug.Assert(component != null);
+			// Should not already exist
+			if (!Components.Any(x => x.GetType() == Components.GetType()))
+			{
+				// Add the component
+				IsActive = false;
+				_components.Add(component);
+				IsActive = true;
+				return true;
+			}
+			Logger.Log(MessageType.Warning, $"Entity {Name} already has a {component.GetType().Name} component.");
+			return false;			
+		}
+
+		public void RemoveComponet(Component component)
+		{
+			// Cant be null
+			Debug.Assert(component != null);
+			if (component is Transform) return; // Transform Cant be removed
+
+			if(_components.Contains(component))
+			{
+				// Remove the component
+				IsActive = false;
+				_components.Remove(component);
+				IsActive = true;
+			}
+		}
 
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext contex)

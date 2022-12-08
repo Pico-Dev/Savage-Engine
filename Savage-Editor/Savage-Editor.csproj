@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <RootNamespace>Savage_Editor</RootNamespace>
     <UseWPF>true</UseWPF>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -30,8 +30,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Components\Script.cs" />
+    <Compile Include="Editors\WorldEditor\ScriptView.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="envdte" Version="17.4.33103.184" />
     <PackageReference Include="envdte80" Version="17.4.33103.184" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Editors\WorldEditor\ScriptView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
 </Project>
