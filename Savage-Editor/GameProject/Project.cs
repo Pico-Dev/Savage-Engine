@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Savage_Editor.Components;
 using Savage_Editor.DLLWrappers;
 using Savage_Editor.GameDev;
 using Savage_Editor.Utilities;
@@ -185,6 +186,7 @@ namespace Savage_Editor.GameProject
 
 		public void Unload()
 		{
+			UnloadGameCodeDLL();
 			VisualStudio.CloseVisualStudio();
 			UndoRedo.Reset();
 		}
@@ -217,10 +219,14 @@ namespace Savage_Editor.GameProject
 			AvailableScripts = null;
 
 			// Load the DLL
-			if(File.Exists(dll) && EngineAPI.LoadGameCodeDLL(dll) != 0)
+			// Broken Code | if(File.Exists(dll && EngineAPI.LoadGameCodeDLL(dll) != 0))
+			if (File.Exists(dll))
 			{
+				EngineAPI.LoadGameCodeDLL(dll);
 				// Find the scripts
 				AvailableScripts = EngineAPI.GetScriptNames();
+				// Load the scripts
+				ActiveScene.GameEntities.Where(x => x.GetComponent<Script>() != null).ToList().ForEach(x => x.IsActive = true);
 				Logger.Log(MessageType.Info, "Game Code DLL loaded successfully.");
 			}
 			else // If the DLL fails to load
@@ -231,6 +237,8 @@ namespace Savage_Editor.GameProject
 
 		private void UnloadGameCodeDLL()
 		{
+			// Unload the scripts
+			ActiveScene.GameEntities.Where(x => x.GetComponent<Script>() != null).ToList().ForEach(x => x.IsActive = false);
 			// Unload the DLL
 			if(EngineAPI.UnloadGameCodeDLL() != 0)
 			{
@@ -254,6 +262,7 @@ namespace Savage_Editor.GameProject
 				OnPropertyChanged(nameof(Scenes)); // Updates bindings
 			}
 			ActiveScene = Scenes.FirstOrDefault(x => x.IsActive); // Find active scene
+			Debug.Assert(ActiveScene != null);
 
 			await BuildGameCodeDLL(false); // Build the game code
 

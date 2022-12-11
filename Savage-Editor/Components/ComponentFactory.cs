@@ -1,4 +1,4 @@
-﻿<!--
+﻿/*
 	MIT License
 
 Copyright (c) 2022        Daniel McLarty
@@ -21,28 +21,36 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
+*/
 
-<UserControl x:Class="Savage_Editor.Editors.ScriptView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Savage_Editor.Editors"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-	<UserControl.Resources>
-		<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource LightTextBlockStyle}"/>
-	</UserControl.Resources>
-	<local:ComponentView Header="Script">
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="78"/>
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-			<TextBlock Text="Name" Grid.Column="0"/>
-			<TextBlock Text="{Binding Name}" Grid.Column="1"/>
-		</Grid>
-	</local:ComponentView>
-</UserControl>
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace Savage_Editor.Components
+{
+    enum ComponentType
+    {
+        Transform,
+        Script,
+    }
+
+    static class ComponentFactory
+    {
+        // Array of function that will create the type of components when they are called
+        private static readonly Func<GameEntity, object, Component>[] _function = new Func<GameEntity, object, Component>[]
+        {
+            (entity, data) => new Transform(entity),
+            (entity, data) => new Script(entity){Name = (String)data},
+        };
+        // Get the function that will create the component
+        public static Func<GameEntity, object, Component> GetCreationFunction(ComponentType componentType)
+        {
+            Debug.Assert((int)componentType < _function.Length);
+            return _function[(int)componentType];
+        }
+    }
+}

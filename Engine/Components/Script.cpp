@@ -88,15 +88,15 @@ namespace savage::script
 			assert(script != savage::script::registry().end() && script->first == tag);
 			return script->second;
 		}
-	} // detail namespace
-
+		
 #ifdef USE_WITH_EDITOR
-	u8 add_script_name(const char* name)
-	{
-		script_names().emplace_back(name);
-		return true;
-	}
+		u8 add_script_name(const char* name)
+		{
+			script_names().emplace_back(name);
+			return true;
+		}
 #endif // USE_WITH_EDITOR
+	} // detail namespace
 
 	component create(init_info info, game_entity::entity entity)
 	{

@@ -49,13 +49,13 @@ namespace Savage_Editor.Components
 			}
 		}
 
-		public override IMSComponent GetMultiselectionComponent(MSEntity msEntity) => new MSScritp(msEntity);
+		public override IMSComponent GetMultiselectionComponent(MSEntity msEntity) => new MSScript(msEntity);
 
 		public Script(GameEntity owner) : base(owner) { }
 	}
 
 	// Multi-select
-	sealed class MSScritp : MSComponent<Script>
+	sealed class MSScript : MSComponent<Script>
 	{
 		private string _name;
 		public string Name
@@ -89,7 +89,7 @@ namespace Savage_Editor.Components
 			return true;
 		}
 
-		public MSScritp(MSEntity msEntity) : base(msEntity) 
+		public MSScript(MSEntity msEntity) : base(msEntity)
 		{
 			Refresh();
 		}

@@ -25,24 +25,31 @@ SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Linq;
 using Savage_Editor.Components;
 using Savage_Editor.GameProject;
 using Savage_Editor.Utilities;
-using System.ComponentModel;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace Savage_Editor.Editors
 {
+	public class NullableBoolToBoolConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return value is bool b && b == true; 
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return value is bool b && b == true;
+		}
+	}
 	/// <summary>
 	/// Interaction logic for GameEntityView.xaml
 	/// </summary>
@@ -112,6 +119,60 @@ namespace Savage_Editor.Editors
 			vm.IsEnbaled = (sender as CheckBox).IsChecked == true;
 			var redoAction = GetIsEnabledAction(); // Remember new values
 			Project.UndoRedo.Add(new UndoRedoAction(undoAction, redoAction, vm.IsEnbaled == true ? "Enable game entity / game entities" : "Disable game entity / game entities"));
+		}
+
+		private void OnAddComponent_Button_PreviewMouse_LBD(object sender, MouseButtonEventArgs e)
+		{
+			var menu = FindResource("addComponentMenu") as ContextMenu;
+			var btn = sender as ToggleButton;
+			btn.IsChecked = true;
+			menu.Placement = PlacementMode.Bottom;
+			menu.PlacementTarget = btn;
+			menu.MinWidth = btn.ActualWidth;
+			menu.IsOpen = true;
+		}
+
+		private void AddComponent(ComponentType componentType, object data)
+		{
+			var creationFunction = ComponentFactory.GetCreationFunction(componentType); // Get the creation function
+			var changedEntities = new List<(GameEntity entity, Component component)>(); // List of game entities and components for undo redo actions
+			var vm = DataContext as MSEntity;
+			// for each selected entity
+			foreach (var entity in vm.SelectedEntities)
+			{
+				// Create the component that is of the type
+				var component = creationFunction(entity, data);
+				// Then try to add it
+				if(entity.AddComponet(component))
+				{
+					// Remember what changed
+					changedEntities.Add((entity, component));
+				}
+			}
+
+			// Setup undo redo action if something changed
+			if(changedEntities.Any())
+			{
+				vm.Refresh();
+
+				Project.UndoRedo.Add(new UndoRedoAction(
+					() =>
+					{  // Undo
+						changedEntities.ForEach(x => x.entity.RemoveComponet(x.component));
+						(DataContext as MSEntity).Refresh();
+					},
+					() =>
+					{  // Redo
+						changedEntities.ForEach(x => x.entity.AddComponet(x.component));
+						(DataContext as MSEntity).Refresh();
+					}, // Log
+					$"Add {componentType} component"));
+			}
+		}
+
+		private void OnAddScriptComponent(object sender, RoutedEventArgs e)
+		{
+			AddComponent(ComponentType.Script, (sender as MenuItem).Header.ToString());
 		}
 	}
 }

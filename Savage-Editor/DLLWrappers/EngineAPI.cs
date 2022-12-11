@@ -25,8 +25,11 @@ SOFTWARE.
 
 using Savage_Editor.Components;
 using Savage_Editor.EngineAPIStructs;
+using Savage_Editor.GameProject;
+using Savage_Editor.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
@@ -89,7 +92,21 @@ namespace Savage_Editor.DLLWrappers
 				}
 				// Script component
 				{
-					//var c= entity.GetComponent<Script>();
+					var c = entity.GetComponent<Script>();
+					if(c != null && Project.Current != null) // Check for script component and that the project is loaded so it may be deferred until the DLL is loaded.
+					{
+						// Find the script in the project
+						if (Project.Current.AvailableScripts.Contains(c.Name))
+						{
+							// Add the script creator
+							desc.Script.ScriptCreator = GetScriptCreator(c.Name);
+						}
+						else
+						{
+							// Log an error
+							Logger.Log(MessageType.Error, $"Unable to find the script {c.Name}. Script component will NOT be created.");
+						}
+					}
 				}
 
 				return CreateGameEntity(desc);

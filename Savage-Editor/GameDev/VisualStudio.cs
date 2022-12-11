@@ -194,19 +194,21 @@ namespace Savage_Editor.GameDev
 		public static bool IsDebugging()
 		{
 			bool result = false;
+			bool tryAgain = true;
 
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 3 && tryAgain; i++)
 			{
 				try
 				{
 					// Look for open debugger
 					result = _vsInstance != null && (_vsInstance.Debugger.CurrentProgram != null || _vsInstance.Debugger.CurrentMode == EnvDTE.dbgDebugMode.dbgRunMode);
+					tryAgain = false;
 				}
 				catch (Exception ex)
 				{
 					// Print exception and wait one second
 					Debug.WriteLine(ex.Message);
-					if (!result) System.Threading.Thread.Sleep(1000);
+					System.Threading.Thread.Sleep(1000);
 				}
 			}
 			return result;
@@ -222,7 +224,7 @@ namespace Savage_Editor.GameDev
 			OpenVisualStudio(project.Solution);
 			BuildDone = BuildSucceeded = false;
 
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 3 && !BuildDone; i++)
 			{
 				try
 				{
