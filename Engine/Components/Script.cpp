@@ -143,6 +143,15 @@ namespace savage::script
 		id_mapping[id::index(last_id)] = index; // Reference the moved object to its old ID
 		id_mapping[id::index(id)] = id::invalid_id; // Set the removed component to an invalid ID
 	}
+
+	void update(float dt)
+	{
+		// Goes through all scripts and calls the update function
+		for (auto& ptr : entity_scripts)
+		{
+			ptr->update(dt);
+		}
+	}
 }
 
 #ifdef USE_WITH_EDITOR

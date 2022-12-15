@@ -45,15 +45,15 @@ namespace {
 		{
 			using namespace DirectX;
 			transform::init_info info{};
-			memcpy(&info.position[0], &position[0], sizeof(f32) * _countof(position)); // Copy position values as is
-			memcpy(&info.scale[0], &scale[0], sizeof(f32) * _countof(scale)); // Copy scale values as is
+			memcpy(&info.position[0], &position[0], sizeof(position)); // Copy position values as is
+			memcpy(&info.scale[0], &scale[0], sizeof(scale)); // Copy scale values as is
 			XMFLOAT3A rot{ &rotation[0] }; // Gets the rotation form the editor
 			// Transform Euler angle for rotation form editor to quaternion for the engine
 			XMVECTOR quat{ XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3A(&rot)) };
 			// Save it to an array for the engine
 			XMFLOAT4A rot_quat{};
 			XMStoreFloat4A(&rot_quat, quat);
-			memcpy(&info.rotation[0], &rot_quat.x, sizeof(f32) * _countof(info.rotation)); // Return translated quaternion value to engine
+			memcpy(&info.rotation[0], &rot_quat.x, sizeof(rotation)); // Return translated quaternion value to engine
 			return info;
 		}
 	};

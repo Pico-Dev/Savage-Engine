@@ -257,5 +257,24 @@ namespace Savage_Editor.GameDev
 				}
 			}
 		}
+
+		// Run the game code solution
+		public static void Run(Project project, string configName, bool debug)
+		{
+			// Check if the instance exists and it is not debugging
+			if(_vsInstance != null && !IsDebugging() && BuildDone && BuildSucceeded)
+			{
+				_vsInstance.ExecuteCommand(debug ? "Debug.Start" : "Debug.StartWithoutDebugging");
+			}
+		}
+
+		// Stop the debugger
+		public static void Stop()
+		{
+			if(_vsInstance != null && IsDebugging())
+			{
+				_vsInstance.ExecuteCommand("Debug.StopDebugging");
+			}
+		}
 	}
 }

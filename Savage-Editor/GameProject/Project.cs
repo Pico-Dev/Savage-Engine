@@ -116,13 +116,15 @@ namespace Savage_Editor.GameProject
 
 		public static UndoRedo UndoRedo { get; } = new UndoRedo();
 
-		public ICommand UndoCommand { get; private set; }
-		public ICommand RedoCommand { get; private set; }
-
-		public ICommand AddSceneCommand { get; private set; }
-		public ICommand RemoveSceneCommand { get; private set; }
-		public ICommand SaveCommand { get; private set; }
-		public ICommand BuildCommand { get; private set; }
+		public ICommand UndoCommand { get; private set; }			// Undo an action
+		public ICommand RedoCommand { get; private set; }			// Redo an action
+		public ICommand AddSceneCommand { get; private set; }		// Add a scene
+		public ICommand RemoveSceneCommand { get; private set; }	// Remove a scene
+		public ICommand SaveCommand { get; private set; }			// Save the project
+		public ICommand DebugCommand { get; private set; }			// Start the game with a debugger
+		public ICommand WithoutDebugCommand { get; private set; }	// Start the game without a debugger
+		public ICommand DebugStopCommand { get; private set; }		// Stop the debugger
+		public ICommand BuildCommand { get; private set; }			// Build the game
 
 		private void SetCommands()
 		{
@@ -150,10 +152,13 @@ namespace Savage_Editor.GameProject
 					$"Remove {x.Name}")); // Name of the action
 			}, x => !x.IsActive); // Look if scene is active
 
-			UndoCommand = new RelayCommand<object>(x => UndoRedo.Undo(), x => UndoRedo.UndoList.Any()); // Setup undo command
-			RedoCommand = new RelayCommand<object>(x => UndoRedo.Redo(), x => UndoRedo.RedoList.Any()); // Setup redo command
-			SaveCommand = new RelayCommand<object>(x => save(this)); // Setup save command
-			BuildCommand = new RelayCommand<bool>(async x => await BuildGameCodeDLL(), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone); // Setup build command
+			UndoCommand			= new RelayCommand<object>(x => UndoRedo.Undo(), x => UndoRedo.UndoList.Any());												// Setup undo command
+			RedoCommand			= new RelayCommand<object>(x => UndoRedo.Redo(), x => UndoRedo.RedoList.Any());												// Setup redo command
+			SaveCommand			= new RelayCommand<object>(x => save(this));																				// Setup save command
+			DebugCommand		= new RelayCommand<object>(async x => await RunGame(true), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);		// Setup debug command
+			WithoutDebugCommand = new RelayCommand<object>(async x => await RunGame(false), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);	// Setup without debug command
+			DebugStopCommand	= new RelayCommand<object>(async x => await StopGame(), x => VisualStudio.IsDebugging());									// Setup debug stop command
+			BuildCommand		= new RelayCommand<bool>(async x => await BuildGameCodeDLL(), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);	// Setup build command
 
 			// Notify UI of command initialization
 			OnPropertyChanged(nameof(AddSceneCommand));
@@ -161,6 +166,9 @@ namespace Savage_Editor.GameProject
 			OnPropertyChanged(nameof(UndoCommand));
 			OnPropertyChanged(nameof(RedoCommand));
 			OnPropertyChanged(nameof(SaveCommand));
+			OnPropertyChanged(nameof(DebugCommand));
+			OnPropertyChanged(nameof(WithoutDebugCommand));
+			OnPropertyChanged(nameof(DebugStopCommand));
 			OnPropertyChanged(nameof(BuildCommand));
 		}
 
@@ -191,11 +199,52 @@ namespace Savage_Editor.GameProject
 			UndoRedo.Reset();
 		}
 
+		// Save the project such that it works with the engine
+		private void SaveToBinary()
+		{
+			var configName = _getConfigurationNames(StandAloneBiuldConfig);
+			var bin = $@"{Path}x64\{configName}\game.bin";
+
+			using (var bw = new BinaryWriter(File.Open(bin, FileMode.Create, FileAccess.Write)))
+			{
+				bw.Write(ActiveScene.GameEntities.Count);
+				foreach (var entity in ActiveScene.GameEntities)
+				{
+					bw.Write(0); // Entity type (reserved for later)
+					bw.Write(entity.Components.Count); // Number of components in the entity
+					// Write all components
+					foreach (var component in entity.Components) 
+					{
+						bw.Write((int)component.ToEnumType());
+						component.WriteToBinary(bw);
+					}
+				}
+			}
+		}
+
+		// Build and run the game code
+		private async Task RunGame(bool debug)
+		{
+			var configName = _getConfigurationNames(StandAloneBiuldConfig);
+			// Build the solution on another thread
+			await Task.Run(() => VisualStudio.BuildSolution(this, configName, debug));
+			// Try and run the game code on another thread for responsiveness
+			if(VisualStudio.BuildSucceeded)
+			{
+				SaveToBinary();
+				await Task.Run(() => VisualStudio.Run(this, configName, debug));
+			}
+		}
+
+		// Stop the game code
+		private async Task StopGame() => await Task.Run(() => VisualStudio.Stop());
+
 		private async Task BuildGameCodeDLL(bool showWindow = true)
 		{
 			try
 			{
 				UnloadGameCodeDLL();
+				// Build then load the DLL
 				await Task.Run(() => VisualStudio.BuildSolution(this, _getConfigurationNames(DLLBiuldConfig), showWindow));
 				if (VisualStudio.BuildSucceeded)
 				{
@@ -204,6 +253,7 @@ namespace Savage_Editor.GameProject
 			}
 			catch (Exception ex)
 			{
+				// Throw an error if something went wrong
 				Debug.WriteLine(ex.Message);
 				Logger.Log(MessageType.Error, "Failed to compile project");
 				throw;
