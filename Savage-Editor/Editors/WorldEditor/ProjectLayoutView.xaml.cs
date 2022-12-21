@@ -26,19 +26,9 @@ SOFTWARE.
 using Savage_Editor.Components;
 using Savage_Editor.GameProject;
 using Savage_Editor.Utilities;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 
 namespace Savage_Editor.Editors

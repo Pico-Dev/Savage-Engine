@@ -24,12 +24,15 @@ SOFTWARE.
 */
 
 #pragma once
-#include <thread>
+#include "CommonHeaders.h"
+#include "Window.h"
 
-class test
-{
-public:
-	virtual bool initialize() = 0;
-	virtual void run() = 0;
-	virtual void shutdown() = 0;
-};
+namespace savage::platform {
+
+	struct window_init_info;
+
+	// Allow for window creation even without an init-info bu using defaults
+	Window create_window(const window_init_info* const init_info = nullptr);
+	// Remove the window with the id
+	void remove_window(window_id id);
+}

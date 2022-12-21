@@ -50,7 +50,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// This loop calls the engine update function
 		while (is_running)
 		{
-			engine_update();
 			// This loop reads, removes and, dispatches until there are none left to process
 			while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 			{

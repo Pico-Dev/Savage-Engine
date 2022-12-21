@@ -117,7 +117,6 @@ namespace savage::game_entity {
 		assert(id::is_valid(id)); // Must be valid
 		const id::id_type index{ id::index(id) }; // Get entity index
 		assert(index < generations.size()); // Index must be within current generations
-		assert(generations[index] == id::generation(id));
 		return (generations[index] == id::generation(id) && transforms[index].is_valid()); // Return if they are the same generation otherwise it is not "alive"
 	}
 

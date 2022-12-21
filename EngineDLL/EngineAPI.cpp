@@ -43,8 +43,7 @@ namespace {
 	_get_script_names get_script_names{ nullptr };
 } // Anonymous namespace
 
-EDITOR_INTERFACE u32 
-LoadGameCodeDLL(const char* dll_path)
+EDITOR_INTERFACE u32 LoadGameCodeDLL(const char* dll_path)
 {
 	if (game_code_dll) return FALSE; // Return false if already loaded
 	game_code_dll = LoadLibraryA(dll_path); // Load the DLL
@@ -59,8 +58,7 @@ LoadGameCodeDLL(const char* dll_path)
 	return (game_code_dll && get_script_creator && get_script_names) ? TRUE : FALSE;
 }
 
-EDITOR_INTERFACE u32
-UnloadGameCodeDLL(const char* dll_path)
+EDITOR_INTERFACE u32 UnloadGameCodeDLL(const char* dll_path)
 {
 	if (!game_code_dll) return FALSE; // Return false if already unloaded
 	assert(game_code_dll);
@@ -70,15 +68,13 @@ UnloadGameCodeDLL(const char* dll_path)
 	return TRUE;
 }
 
-EDITOR_INTERFACE script::detail::script_creator
-GetScriptCreator(const char* name)
+EDITOR_INTERFACE script::detail::script_creator GetScriptCreator(const char* name)
 {
 	// If the DLL is loaded AND we have the script creator call it then convert the name to a tag then return the pointer otherwise it is a null pointer
 	return (game_code_dll && get_script_creator) ? get_script_creator(script::detail::string_hash()(name)) : nullptr;
 }
 
-EDITOR_INTERFACE LPSAFEARRAY
-GetScriptNames()
+EDITOR_INTERFACE LPSAFEARRAY GetScriptNames()
 {
 	// If the DLL is loaded AND we have the script names return them otherwise return a null pointer
 	return (game_code_dll && get_script_names) ? get_script_names() : nullptr;

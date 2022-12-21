@@ -24,12 +24,36 @@ SOFTWARE.
 */
 
 #pragma once
-#include <thread>
+#include "CommonHeaders.h"
 
-class test
+namespace savage::platform 
 {
-public:
-	virtual bool initialize() = 0;
-	virtual void run() = 0;
-	virtual void shutdown() = 0;
-};
+
+	DEFINE_TYPED_ID(window_id)
+
+	class Window
+	{
+	public:
+		// When making an instance of this class without a parameter for the constructor it will return an invalid ID
+		constexpr explicit Window(window_id id) : _id{ id } {}
+		constexpr Window() : _id{ id::invalid_id } {}
+		// If the transform has a valid ID it will return that
+		constexpr window_id get_id() const { return _id; }
+		// Check if ID is valid
+		constexpr bool is_valid() const { return id::is_valid(_id); }
+
+		// Window value definitions
+		void set_fullscreen(bool is_fullscreen) const;
+		bool is_fullscreen() const;
+		void* handle() const;
+		void set_caption(const wchar_t* caption) const;
+		const math::u32v4 size() const;
+		void resize(u32 width, u32 height) const;
+		const u32 width() const;
+		const u32 height() const;
+		bool is_closed() const;
+
+	private:
+		window_id _id{ id::invalid_id };
+	};
+}

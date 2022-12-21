@@ -85,8 +85,7 @@ namespace {
 	}
 } // Anonymous namespace
 
-EDITOR_INTERFACE
-id::id_type CreateGameEntity(game_entity_descriptor* e)
+EDITOR_INTERFACE id::id_type CreateGameEntity(game_entity_descriptor* e)
 {
 	assert(e);
 	//Convert editor info to engine info
@@ -101,8 +100,7 @@ id::id_type CreateGameEntity(game_entity_descriptor* e)
 	return game_entity::create(entity_info).get_id();
 }
 
-EDITOR_INTERFACE
-void RemoveGameEntity(id::id_type id)
+EDITOR_INTERFACE void RemoveGameEntity(id::id_type id)
 {
 	assert(id::is_valid(id));
 	game_entity::remove(game_entity::entity_id{ id });
