@@ -1,40 +1,22 @@
 ﻿/*
-	MIT License
+Copyright (c) 2022 Daniel McLarty
+Copyright (c) 2020-2022 Arash Khatami
 
-Copyright (c) 2022        Daniel McLarty
-Copyright (c) 2020-2022   Arash Khatami
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - see LICENSE file
 */
 
-using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Linq;
 using Savage_Editor.Components;
 using Savage_Editor.GameProject;
 using Savage_Editor.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Globalization;
+using System.Windows.Input;
 
 namespace Savage_Editor.Editors
 {
@@ -42,7 +24,7 @@ namespace Savage_Editor.Editors
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			return value is bool b && b == true; 
+			return value is bool b && b == true;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -103,7 +85,7 @@ namespace Savage_Editor.Editors
 
 		private void OnName_TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 		{
-			if(_propertyName == nameof(MSEntity.Name) && _undoAction != null)
+			if (_propertyName == nameof(MSEntity.Name) && _undoAction != null)
 			{
 				var redoAction = GetRenameAction();
 				Project.UndoRedo.Add(new UndoRedoAction(_undoAction, redoAction, "Rename game entity / game entities"));
@@ -143,7 +125,7 @@ namespace Savage_Editor.Editors
 				// Create the component that is of the type
 				var component = creationFunction(entity, data);
 				// Then try to add it
-				if(entity.AddComponet(component))
+				if (entity.AddComponet(component))
 				{
 					// Remember what changed
 					changedEntities.Add((entity, component));
@@ -151,7 +133,7 @@ namespace Savage_Editor.Editors
 			}
 
 			// Setup undo redo action if something changed
-			if(changedEntities.Any())
+			if (changedEntities.Any())
 			{
 				vm.Refresh();
 

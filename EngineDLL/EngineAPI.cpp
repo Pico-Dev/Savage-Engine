@@ -1,31 +1,16 @@
 /*
-	MIT License
+Copyright (c) 2022 Daniel McLarty
+Copyright (c) 2020-2022 Arash Khatami
 
-Copyright (c) 2022        Daniel McLarty
-Copyright (c) 2020-2022   Arash Khatami
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - see LICENSE file
 */
 
 #include "Common.h"
 #include "CommonHeaders.h"
 #include "..\Engine\Components\Script.h"
+#include "..\Graphics\Renderer.h"
+#include "..\Platform\PlatformTypes.h"
+#include "..\Platform\Platform.h"
 
 #ifndef WIN32_MEAN_AND_LEAN
 #define WIN32_MEAN_AND_LEAN
@@ -41,6 +26,10 @@ namespace {
 	_get_script_creator get_script_creator{ nullptr };
 	using _get_script_names = LPSAFEARRAY(*)(void);
 	_get_script_names get_script_names{ nullptr };
+
+	// Array of render surfaces
+	utl::vector<graphics::render_surface> surfaces;
+
 } // Anonymous namespace
 
 EDITOR_INTERFACE u32 LoadGameCodeDLL(const char* dll_path)
@@ -78,4 +67,35 @@ EDITOR_INTERFACE LPSAFEARRAY GetScriptNames()
 {
 	// If the DLL is loaded AND we have the script names return them otherwise return a null pointer
 	return (game_code_dll && get_script_names) ? get_script_names() : nullptr;
+}
+
+EDITOR_INTERFACE u32 CreateRenderSurface(HWND host, s32 width, s32 height)
+{
+	assert(host);
+	// Create the window init info
+	platform::window_init_info info{ nullptr, host, nullptr, 0, 0, width, height };
+	// Create the window
+	graphics::render_surface surface{ platform::create_window(&info), {} };
+	assert(surface.window.is_valid());
+	surfaces.emplace_back(surface);
+	return (u32)surfaces.size() - 1;
+}
+
+EDITOR_INTERFACE void RemoveRenderSurface(u32 id)
+{
+	assert(id < surfaces.size());
+	platform::remove_window(surfaces[id].window.get_id());
+}
+
+EDITOR_INTERFACE HWND GetWindowHandle(u32 id)
+{
+	assert(id < surfaces.size());
+	return (HWND)surfaces[id].window.handle();
+}
+
+EDITOR_INTERFACE void ResizeRenderSurface(u32 id)
+{
+	assert(id < surfaces.size());
+	// The size does not matter as we just are updating the client area so I had some fun sue me
+	surfaces[id].window.resize(69, 420);
 }

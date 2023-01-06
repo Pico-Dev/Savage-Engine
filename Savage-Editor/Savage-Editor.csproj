@@ -33,5 +33,5 @@
     <PackageReference Include="envdte" Version="17.4.33103.184" />
     <PackageReference Include="envdte80" Version="17.4.33103.184" />
   </ItemGroup>
-
+	
 </Project>

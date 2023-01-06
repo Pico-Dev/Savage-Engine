@@ -1,38 +1,20 @@
 ﻿/*
-	MIT License
+Copyright (c) 2022 Daniel McLarty
+Copyright (c) 2020-2022 Arash Khatami
 
-Copyright (c) 2022        Daniel McLarty
-Copyright (c) 2020-2022   Arash Khatami
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - see LICENSE file
 */
 
 
+using Savage_Editor.DLLWrappers;
 using Savage_Editor.GameProject;
+using Savage_Editor.Utilities;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
-using Savage_Editor.Utilities;
-using Savage_Editor.DLLWrappers;
 
 namespace Savage_Editor.Components
 {
@@ -64,12 +46,12 @@ namespace Savage_Editor.Components
 				if (_isActive != value)
 				{
 					_isActive = value;
-					if(_isActive) // Should be loaded
+					if (_isActive) // Should be loaded
 					{
 						EntityID = EngineAPI.EntityAPI.CreateGameEntity(this);
 						Debug.Assert(ID.IsValid(_entityID));
 					}
-					else if(ID.IsValid(_entityID))// Should be removed
+					else if (ID.IsValid(_entityID))// Should be removed
 					{
 						EngineAPI.EntityAPI.RemoveGameEntity(this);
 						EntityID = ID.INVALID_ID;
@@ -132,7 +114,7 @@ namespace Savage_Editor.Components
 				return true;
 			}
 			Logger.Log(MessageType.Warning, $"Entity {Name} already has a {component.GetType().Name} component.");
-			return false;			
+			return false;
 		}
 
 		public void RemoveComponet(Component component)
@@ -141,7 +123,7 @@ namespace Savage_Editor.Components
 			Debug.Assert(component != null);
 			if (component is Transform) return; // Transform Cant be removed
 
-			if(_components.Contains(component))
+			if (_components.Contains(component))
 			{
 				// Remove the component
 				IsActive = false;
@@ -153,7 +135,7 @@ namespace Savage_Editor.Components
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext contex)
 		{
-			if(_components != null)
+			if (_components != null)
 			{
 				Components = new ReadOnlyObservableCollection<Component>(_components);
 				OnPropertyChanged(nameof(Components));
@@ -222,8 +204,8 @@ namespace Savage_Editor.Components
 			foreach (var component in firstEntity.Components) // Go through all components in the entity
 			{
 				var type = component.GetType(); // Get it's type
-				// See if all selected entities have the same component
-				if(!SelectedEntities.Skip(1).Any(entity => entity.GetComponent(type) == null))
+												// See if all selected entities have the same component
+				if (!SelectedEntities.Skip(1).Any(entity => entity.GetComponent(type) == null))
 				{
 					// Should not be in the list already
 					Debug.Assert(Components.FirstOrDefault(x => x.GetType() == type) == null);
@@ -280,7 +262,7 @@ namespace Savage_Editor.Components
 			Debug.Assert(entities?.Any() == true); // Can't be null or empty
 			Components = new ReadOnlyObservableCollection<IMSComponent>(_components);
 			SelectedEntities = entities;
-			PropertyChanged += (s, e) => { if(_enableUpdates) UpdateGameEntities(e.PropertyName); }; // Update proprieties of all game entities that were changed
+			PropertyChanged += (s, e) => { if (_enableUpdates) UpdateGameEntities(e.PropertyName); }; // Update proprieties of all game entities that were changed
 		}
 	}
 

@@ -1,39 +1,18 @@
 ﻿/*
-	MIT License
+Copyright (c) 2022 Daniel McLarty
+Copyright (c) 2020-2022 Arash Khatami
 
-Copyright (c) 2022        Daniel McLarty
-Copyright (c) 2020-2022   Arash Khatami
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - see LICENSE file
 */
 
 using Savage_Editor.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace Savage_Editor.GameProject
 {
@@ -59,13 +38,13 @@ namespace Savage_Editor.GameProject
 	{
 		private readonly string _templatePath = @"..\..\Savage-Editor\ProjectTemplates\"; // TODO: get path from the install location
 		private string _projectName = "NewProject"; // Set default name
-		// Set public Name var
+													// Set public Name var
 		public string ProjectName
 		{
-			get	=> _projectName;
+			get => _projectName;
 			set
 			{
-				if(_projectName != value)
+				if (_projectName != value)
 				{
 					_projectName = value;
 					ValidateProjectPath();
@@ -75,7 +54,7 @@ namespace Savage_Editor.GameProject
 		}
 
 		private string _projectPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\Savage-Engine\"; // Get location of my documents
-		// Set public Path var
+																															 // Set public Path var
 		public string ProjectPath
 		{
 			get => _projectPath;
@@ -174,8 +153,8 @@ namespace Savage_Editor.GameProject
 
 			try
 			{
-				if(!Directory.Exists(path)) Directory.CreateDirectory(path); // Create path if it does not exist
-				// Create all needed sub-directories
+				if (!Directory.Exists(path)) Directory.CreateDirectory(path); // Create path if it does not exist
+																			  // Create all needed sub-directories
 				foreach (var folder in template.Folders)
 				{
 					Directory.CreateDirectory(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path), folder)));
@@ -250,7 +229,7 @@ namespace Savage_Editor.GameProject
 				}
 				ValidateProjectPath();
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
 				Logger.Log(MessageType.Error, $"Failed to read project templates");

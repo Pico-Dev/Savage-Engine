@@ -1,26 +1,8 @@
 ﻿/*
-	MIT License
+Copyright (c) 2022 Daniel McLarty
+Copyright (c) 2020-2022 Arash Khatami
 
-Copyright (c) 2022        Daniel McLarty
-Copyright (c) 2020-2022   Arash Khatami
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - see LICENSE file
 */
 
 using Savage_Editor.Components;
@@ -28,14 +10,11 @@ using Savage_Editor.DLLWrappers;
 using Savage_Editor.GameDev;
 using Savage_Editor.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -61,7 +40,7 @@ namespace Savage_Editor.GameProject
 		public string FullPath => $@"{Path}{Name}{Extension}";
 		public string Solution => $@"{Path}{Name}.sln";
 
-		private static readonly string[] _buildConfigurationNames = new string[] { "Debug", "DebugEditor", "Release", "ReleaseEditor"};
+		private static readonly string[] _buildConfigurationNames = new string[] { "Debug", "DebugEditor", "Release", "ReleaseEditor" };
 
 		private int _buildConfig;
 		[DataMember]
@@ -116,15 +95,15 @@ namespace Savage_Editor.GameProject
 
 		public static UndoRedo UndoRedo { get; } = new UndoRedo();
 
-		public ICommand UndoCommand { get; private set; }			// Undo an action
-		public ICommand RedoCommand { get; private set; }			// Redo an action
-		public ICommand AddSceneCommand { get; private set; }		// Add a scene
-		public ICommand RemoveSceneCommand { get; private set; }	// Remove a scene
-		public ICommand SaveCommand { get; private set; }			// Save the project
-		public ICommand DebugCommand { get; private set; }			// Start the game with a debugger
-		public ICommand WithoutDebugCommand { get; private set; }	// Start the game without a debugger
-		public ICommand DebugStopCommand { get; private set; }		// Stop the debugger
-		public ICommand BuildCommand { get; private set; }			// Build the game
+		public ICommand UndoCommand { get; private set; }           // Undo an action
+		public ICommand RedoCommand { get; private set; }           // Redo an action
+		public ICommand AddSceneCommand { get; private set; }       // Add a scene
+		public ICommand RemoveSceneCommand { get; private set; }    // Remove a scene
+		public ICommand SaveCommand { get; private set; }           // Save the project
+		public ICommand DebugCommand { get; private set; }          // Start the game with a debugger
+		public ICommand WithoutDebugCommand { get; private set; }   // Start the game without a debugger
+		public ICommand DebugStopCommand { get; private set; }      // Stop the debugger
+		public ICommand BuildCommand { get; private set; }          // Build the game
 
 		private void SetCommands()
 		{
@@ -152,13 +131,13 @@ namespace Savage_Editor.GameProject
 					$"Remove {x.Name}")); // Name of the action
 			}, x => !x.IsActive); // Look if scene is active
 
-			UndoCommand			= new RelayCommand<object>(x => UndoRedo.Undo(), x => UndoRedo.UndoList.Any());												// Setup undo command
-			RedoCommand			= new RelayCommand<object>(x => UndoRedo.Redo(), x => UndoRedo.RedoList.Any());												// Setup redo command
-			SaveCommand			= new RelayCommand<object>(x => save(this));																				// Setup save command
-			DebugCommand		= new RelayCommand<object>(async x => await RunGame(true), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);		// Setup debug command
-			WithoutDebugCommand = new RelayCommand<object>(async x => await RunGame(false), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);	// Setup without debug command
-			DebugStopCommand	= new RelayCommand<object>(async x => await StopGame(), x => VisualStudio.IsDebugging());									// Setup debug stop command
-			BuildCommand		= new RelayCommand<bool>(async x => await BuildGameCodeDLL(), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);	// Setup build command
+			UndoCommand = new RelayCommand<object>(x => UndoRedo.Undo(), x => UndoRedo.UndoList.Any());                                             // Setup undo command
+			RedoCommand = new RelayCommand<object>(x => UndoRedo.Redo(), x => UndoRedo.RedoList.Any());                                             // Setup redo command
+			SaveCommand = new RelayCommand<object>(x => save(this));                                                                                // Setup save command
+			DebugCommand = new RelayCommand<object>(async x => await RunGame(true), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);        // Setup debug command
+			WithoutDebugCommand = new RelayCommand<object>(async x => await RunGame(false), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone);    // Setup without debug command
+			DebugStopCommand = new RelayCommand<object>(async x => await StopGame(), x => VisualStudio.IsDebugging());                                  // Setup debug stop command
+			BuildCommand = new RelayCommand<bool>(async x => await BuildGameCodeDLL(), x => !VisualStudio.IsDebugging() && VisualStudio.BuildDone); // Setup build command
 
 			// Notify UI of command initialization
 			OnPropertyChanged(nameof(AddSceneCommand));
@@ -212,8 +191,8 @@ namespace Savage_Editor.GameProject
 				{
 					bw.Write(0); // Entity type (reserved for later)
 					bw.Write(entity.Components.Count); // Number of components in the entity
-					// Write all components
-					foreach (var component in entity.Components) 
+													   // Write all components
+					foreach (var component in entity.Components)
 					{
 						bw.Write((int)component.ToEnumType());
 						component.WriteToBinary(bw);
@@ -229,7 +208,7 @@ namespace Savage_Editor.GameProject
 			// Build the solution on another thread
 			await Task.Run(() => VisualStudio.BuildSolution(this, configName, debug));
 			// Try and run the game code on another thread for responsiveness
-			if(VisualStudio.BuildSucceeded)
+			if (VisualStudio.BuildSucceeded)
 			{
 				SaveToBinary();
 				await Task.Run(() => VisualStudio.Run(this, configName, debug));
@@ -290,7 +269,7 @@ namespace Savage_Editor.GameProject
 			// Unload the scripts
 			ActiveScene.GameEntities.Where(x => x.GetComponent<Script>() != null).ToList().ForEach(x => x.IsActive = false);
 			// Unload the DLL
-			if(EngineAPI.UnloadGameCodeDLL() != 0)
+			if (EngineAPI.UnloadGameCodeDLL() != 0)
 			{
 				Logger.Log(MessageType.Info, "Game Code DLL unloaded.");
 				AvailableScripts = null;

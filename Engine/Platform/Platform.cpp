@@ -1,26 +1,8 @@
 /*
-	MIT License
+Copyright (c) 2022 Daniel McLarty
+Copyright (c) 2020-2022 Arash Khatami
 
-Copyright (c) 2022        Daniel McLarty
-Copyright (c) 2020-2022   Arash Khatami
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - see LICENSE file
 */
 
 #include "Platform.h"
@@ -133,7 +115,7 @@ namespace savage::platform {
 			RECT window_rect{ area };
 			AdjustWindowRect(&window_rect, info.style, FALSE);
 
-			const s32 width{ window_rect.right - window_rect.right };
+			const s32 width{ window_rect.right - window_rect.left };
 			const s32 height{ window_rect.bottom - window_rect.top };
 
 			MoveWindow(info.hwnd, info.top_left.x, info.top_left.y, width, height, true);
@@ -143,11 +125,20 @@ namespace savage::platform {
 		{
 			window_info& info{ get_from_id(id) };
 
-			RECT& area{ info.is_fullscreen ? info.fullscreen_area : info.client_area };
-			area.bottom = area.top + height;
-			area.right = area.left + width;
+			// If it is a child (like in the editor) just update the client area
+			if (info.style & WS_CHILD)
+			{
+				GetClientRect(info.hwnd, &info.client_area);
+			}
+			else
+			{
+				// We resize in fullscreen in case the resolution changes
+				RECT& area{ info.is_fullscreen ? info.fullscreen_area : info.client_area };
+				area.bottom = area.top + height;
+				area.right = area.left + width;
 
-			resize_window(info, area);
+				resize_window(info, area);
+			}
 		}
 
 		void set_window_fullscreen(window_id id, bool is_fullscreen)
@@ -169,16 +160,13 @@ namespace savage::platform {
 					// Fullscreen info
 					info.top_left.x = rect.left;
 					info.top_left.y = rect.top;
-					info.style = 0;
 
 					// Set the style and show the window
-					SetWindowLongPtr(info.hwnd, GWL_STYLE, info.style);
+					SetWindowLongPtr(info.hwnd, GWL_STYLE, 0);
 					ShowWindow(info.hwnd, SW_MAXIMIZE);
 				}
 				else
 				{
-					info.style = WS_VISIBLE | WS_OVERLAPPEDWINDOW;
-
 					// Set the style of the window
 					SetWindowLongPtr(info.hwnd, GWL_STYLE, info.style);
 
@@ -208,7 +196,7 @@ namespace savage::platform {
 		math::u32v4 get_window_size(window_id id)
 		{
 			window_info& info{ get_from_id(id) };
-			RECT area{ info.is_fullscreen ? info.fullscreen_area : info.client_area };
+			RECT& area{ info.is_fullscreen ? info.fullscreen_area : info.client_area };
 			return { (u32)area.left, (u32)area.top, (u32)area.right, (u32)area.bottom, };
 		}
 
@@ -245,18 +233,22 @@ namespace savage::platform {
 		RegisterClassEx(&wc);
 
 		window_info info{};
-		RECT rc{ info.client_area }; // content of window except title bar
-
-		// Adjust the window for the correct device size
-		AdjustWindowRect(&rc, info.style, FALSE);
-
-		const wchar_t* caption{ (init_info && init_info->caption) ? init_info->caption : L"Savage Game" };
-		const s32 left{ (init_info && init_info->left) ? init_info->left : info.client_area.left };
-		const s32 top { (init_info && init_info->top)  ? init_info->top  : info.client_area.top };
-		const s32 width{ (init_info && init_info->width) ? init_info->width : rc.right - rc.left };
-		const s32 height{ (init_info && init_info->height) ? init_info->height : rc.bottom - rc.top };
+		info.client_area.right = (init_info && init_info->width) ? info.client_area.left + init_info->width: info.client_area.right;
+		info.client_area.bottom = (init_info && init_info->height) ? info.client_area.top + init_info->height : info.client_area.bottom;
 
 		info.style |= parent ? WS_CHILD : WS_OVERLAPPEDWINDOW;
+
+		RECT rect{ info.client_area }; // content of window except title bar
+
+		// Adjust the window for the correct device size
+		AdjustWindowRect(&rect, info.style, FALSE);
+
+		const wchar_t* caption{ (init_info && init_info->caption) ? init_info->caption : L"Savage Game" };
+		const s32 left{ (init_info) ? init_info->left : info.top_left.x };
+		const s32 top { (init_info)  ? init_info->top  : info.top_left.y };
+		const s32 width{ rect.right - rect.left };
+		const s32 height{ rect.bottom - rect.top };
+
 
 		// Create an instant of the class
 		info.hwnd = CreateWindowEx(
@@ -274,7 +266,7 @@ namespace savage::platform {
 		if (info.hwnd)
 		{
 			// Clear any error
-			SetLastError(0);
+			DEBUG_OP(SetLastError(0));
 			// Set the ID and save it in a long pointer
 			const window_id id{ add_to_windows(info) };
 			SetWindowLongPtr(info.hwnd, GWLP_USERDATA, (LONG_PTR)id);
@@ -297,7 +289,7 @@ namespace savage::platform {
 		DestroyWindow(info.hwnd);
 		remove_from_windows(id);
 	}
-#elif
+#else
 #error "Must implement at least one platform"
 #endif // _WIN64
 
@@ -326,7 +318,7 @@ namespace savage::platform {
 		set_window_caption(_id, caption);
 	}
 
-	const math::u32v4 Window::size() const
+	math::u32v4 Window::size() const
 	{
 		assert(is_valid());
 		return get_window_size(_id);
@@ -338,13 +330,13 @@ namespace savage::platform {
 		resize_window(_id, width, height);
 	}
 
-	const u32 Window::width() const
+	u32 Window::width() const
 	{
 		math::u32v4 s{ size() };
 		return s.z - s.x;
 	}
 
-	const u32 Window::height() const
+	u32 Window::height() const
 	{
 		math::u32v4 s{ size() };
 		return s.w - s.y;

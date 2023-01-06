@@ -1,31 +1,12 @@
 ﻿/*
-	MIT License
+Copyright (c) 2022 Daniel McLarty
+Copyright (c) 2020-2022 Arash Khatami
 
-Copyright (c) 2022        Daniel McLarty
-Copyright (c) 2020-2022   Arash Khatami
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - see LICENSE file
 */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Windows.Threading;
 
 namespace Savage_Editor.Utilities
 {
@@ -50,6 +31,60 @@ namespace Savage_Editor.Utilities
 		{
 			if (!value.HasValue || !other.HasValue) return false;
 			return Math.Abs(value.Value - other.Value) < Epsilon;
+		}
+	}
+
+	class DelayEventTimerArgs : EventArgs
+	{
+		// Do we want to call the event
+		public bool RepeatEvent { get; set; }
+		public object Data { get; set; }
+
+		public DelayEventTimerArgs(object data)
+		{
+			Data = data;
+		}
+	}
+
+	// Stop events from happening too fast
+	class DelayEventTimer
+	{
+		private readonly DispatcherTimer _timer;
+		private readonly TimeSpan _delay;
+		private DateTime _lastEventTime = DateTime.Now;
+		private object _data;
+
+		public event EventHandler<DelayEventTimerArgs> Triggerd;
+
+		public void Trigger(object data = null)
+		{
+			_data = data;
+			_lastEventTime = DateTime.Now;
+			_timer.IsEnabled = true;
+		}
+
+		public void Disable()
+		{
+			_timer.IsEnabled = false;
+		}
+
+		private void OnTimerTick(object sender, EventArgs e)
+		{
+			if ((DateTime.Now - _lastEventTime) < _delay) return;
+			var eventArgs = new DelayEventTimerArgs(_data);
+			Triggerd?.Invoke(this, eventArgs);
+			_timer.IsEnabled = eventArgs.RepeatEvent;
+		}
+
+		// Sets the delay before the same event can be called again
+		public DelayEventTimer(TimeSpan delay, DispatcherPriority priority = DispatcherPriority.Normal)
+		{
+			_delay = delay;
+			_timer = new DispatcherTimer(priority)
+			{
+				Interval = TimeSpan.FromMilliseconds(delay.TotalMilliseconds * 0.5)
+			};
+			_timer.Tick += OnTimerTick;
 		}
 	}
 }

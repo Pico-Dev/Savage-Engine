@@ -17,6 +17,7 @@
     <ClInclude Include="Platform\Window.h" />
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="Platform\PlatformTypes.h" />
+    <ClInclude Include="Graphics\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Components\Entity.cpp" />
