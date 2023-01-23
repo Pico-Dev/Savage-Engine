@@ -9,25 +9,25 @@
     <BaseOutputPath>..\</BaseOutputPath>
     <PlatformTarget>x64</PlatformTarget>
     <Title>Savage-Engine</Title>
-    <Configurations>Debug;Release;DebugEditor;ReleaseEditor</Configurations>
+    <Configurations>DebugEditor;ReleaseEditor</Configurations>
     <Platforms>x64</Platforms>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <WarningLevel>9999</WarningLevel>
+    <ApplicationIcon>Resources\Savage-Games-Icon.ico</ApplicationIcon>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugEditor|x64'">
     <WarningLevel>9999</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <WarningLevel>9999</WarningLevel>
+    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseEditor|x64'">
     <WarningLevel>9999</WarningLevel>
+    <Optimize>True</Optimize>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Savage-Games-Icon.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="envdte" Version="17.4.33103.184" />
